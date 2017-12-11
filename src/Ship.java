@@ -32,7 +32,7 @@ public class Ship implements Serializable {
 	private double x;
 	private double y;
 	private boolean alive;
-	private transient Hitbox hitbox;
+	private Hitbox hitbox;
 	
 	public Ship() {
 		HP = 100;
@@ -232,7 +232,7 @@ public class Ship implements Serializable {
 
 	public void setX(double x) {
 		this.x = x;
-		hitbox.update(x, x);
+		hitbox.update(x, y);
 	}
 
 	public double getY() {

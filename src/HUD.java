@@ -58,7 +58,7 @@ public class HUD {
 		heat.draw();
 		
 		g.setColor(new Color(255,255,255));
-		//affichage icone missile
+		g.drawImage(Level.player_res[1], 76, 564);
 		g.drawString("x"+p.getShip().getRck_stock(), 96, 584);
 		for (int i=0;i<p.getLives();i++) {
 			g.drawImage(Level.getRessources()[0], i*32, 32);

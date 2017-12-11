@@ -16,7 +16,10 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-public class Hitbox {
+import java.io.Serializable;
+
+public class Hitbox implements Serializable {
+	private static final long serialVersionUID = -8524756515171271784L;
 	private int height;
 	private int width;
 	private double xor;

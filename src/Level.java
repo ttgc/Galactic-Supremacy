@@ -76,7 +76,12 @@ public abstract class Level extends BasicGameState {
 			throws SlickException {
 		// TODO Auto-generated method stub
 		hud.renderHUD();
-
+		player_res[0].drawCentered((float)player.getShip().getX(), (float)player.getShip().getY());
+		player_res[player.getShip().getCanon().getID()+2].drawCentered((float)player.getShip().getX()+0.5f, (float)player.getShip().getY()-10);
+		if (player.getShip().getShield() != null && player.getShip().getShield().isActiv()) {
+			player_res[6].setAlpha(0.5f);
+			player_res[6].drawCentered((float)player.getShip().getX(), (float)player.getShip().getY());
+		}
 	}
 	
 	@Override
@@ -310,7 +315,11 @@ public abstract class Level extends BasicGameState {
 	public static void initRessources() throws SlickException {
 		ressources = new Image[10];
 		ressources[0] = new Image("Pictures/life.png");
-		player_res = new Image[4];
+		player_res = new Image[7];
+		player_res[0] = new Image("Pictures/ship.png");
+		player_res[1] = new Image("Pictures/rocket.png");
+		player_res[2] = new Image("Pictures/canon.png");
+		player_res[6] = new Image("Pictures/shield.png");
 		ennemies_res = new Image[10];
 		powerup_res = new Image[10];
 	}
@@ -320,9 +329,9 @@ public abstract class Level extends BasicGameState {
 		fonts = new UnicodeFont[2];
 		ColorEffect a = new ColorEffect();
 		
-		String[] list = {"Font/vgafix.fon","Font/vgasts.fon"};
-		int[] size = {20,14};
-		boolean[] bold = {true,false};
+		String[] list = {"Font/spaceboy.ttf","Font/spaceboy.ttf"};
+		int[] size = {32,14};
+		boolean[] bold = {false,false};
 		boolean[] italic = {false,false};
 		
 		for (int i=0;i<fonts.length;i++) {

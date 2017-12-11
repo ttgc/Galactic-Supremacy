@@ -75,6 +75,8 @@ public abstract class Canon implements Serializable {
 	public void repair(int amount) {
 		durability += Math.abs(amount);
 	}
+	
+	public abstract int getID();
 
 	public int getDurability() {
 		return durability;
