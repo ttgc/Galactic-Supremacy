@@ -40,6 +40,7 @@ public class Game extends StateBasedGame {
 		// TODO Auto-generated method stub
 		addState(new TitleScreen());
 		addState(new GameOverScreen());
+		addState(new Shop());
 
 	}
 
@@ -60,6 +61,7 @@ public class Game extends StateBasedGame {
 			app.setDisplayMode(800, 600, false);
 			app.setShowFPS(false);
 			app.setFullscreen(settings.isFullscreen());
+			app.setIcon("Pictures/ship.png");
 			app.start();
 		} catch(SlickException e){
 			e.printStackTrace();

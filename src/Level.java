@@ -315,6 +315,7 @@ public abstract class Level extends BasicGameState {
 	public static void initRessources() throws SlickException {
 		ressources = new Image[10];
 		ressources[0] = new Image("Pictures/life.png");
+		ressources[1] = new Image("Pictures/laser.png");
 		player_res = new Image[7];
 		player_res[0] = new Image("Pictures/ship.png");
 		player_res[1] = new Image("Pictures/rocket.png");

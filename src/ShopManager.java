@@ -69,13 +69,13 @@ public class ShopManager {
 		for (int i=0;i<avalaible.length;i++) {
 			if (avalaible[i]) {
 				count++;
-				if (count == current) {
+				if (count == current+1) {
 					getid = i;
 					break;
 				}
 			}
 		}
-		if (bought[getid] && (!onlyonetime[getid])) {
+		if (!(bought[getid] && onlyonetime[getid])) {
 			return customer.pay(prices[getid]);
 		}
 		return false;
@@ -87,7 +87,7 @@ public class ShopManager {
 		for (int i=0;i<avalaible.length;i++) {
 			if (avalaible[i]) {
 				count++;
-				if (count == current) {
+				if (count == current+1) {
 					getid = i;
 					break;
 				}
@@ -102,7 +102,7 @@ public class ShopManager {
 		for (int i=0;i<avalaible.length;i++) {
 			if (avalaible[i]) {
 				count++;
-				if (count == current) {
+				if (count == current+1) {
 					getid = i;
 					break;
 				}
@@ -117,7 +117,7 @@ public class ShopManager {
 		for (int i=0;i<avalaible.length;i++) {
 			if (avalaible[i]) {
 				count++;
-				if (count == current) {
+				if (count == current+1) {
 					getid = i;
 					break;
 				}
@@ -132,7 +132,7 @@ public class ShopManager {
 		for (int i=0;i<avalaible.length;i++) {
 			if (avalaible[i]) {
 				count++;
-				if (count == current) {
+				if (count == current+1) {
 					getid = i;
 					break;
 				}
@@ -147,7 +147,7 @@ public class ShopManager {
 		for (int i=0;i<avalaible.length;i++) {
 			if (avalaible[i]) {
 				count++;
-				if (count == current) {
+				if (count == current+1) {
 					getid = i;
 					break;
 				}
@@ -162,7 +162,7 @@ public class ShopManager {
 		for (int i=0;i<avalaible.length;i++) {
 			if (avalaible[i]) {
 				count++;
-				if (count == current) {
+				if (count == current+1) {
 					getid = i;
 					break;
 				}
@@ -191,6 +191,21 @@ public class ShopManager {
 
 	}
 	
+	public static ShopSave export_data() {
+		ShopSave sav = new ShopSave();
+		sav.save();
+		return sav;
+	}
+	
+	public static void import_data() {
+		ShopSave sav = ShopSave.load();
+		if (sav == null) {
+			return;
+		}
+		bought = sav.getBougth();
+		onlyonetime = sav.getOnlyonetime();
+	}
+	
 	public static void initShops() {
 		int nbr = 4;
 		bought = new boolean[nbr];
@@ -199,6 +214,14 @@ public class ShopManager {
 			bought[i] = false;
 			onlyonetime[i] = false;
 		}
+	}
+
+	public static boolean[] getBought() {
+		return bought.clone();
+	}
+
+	public static boolean[] getOnlyonetime() {
+		return onlyonetime.clone();
 	}
 
 }

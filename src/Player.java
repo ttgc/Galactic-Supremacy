@@ -38,6 +38,7 @@ public class Player implements Serializable {
 	private int lives;
 	private boolean game_over;
 	private SuperPower power;
+	private int level;
 
 	public Player(String nom) {
 		// TODO Auto-generated constructor stub
@@ -50,6 +51,7 @@ public class Player implements Serializable {
 		lives = 3;
 		game_over = false;
 		power = null;
+		level = 1;
 		
 	}
 	
@@ -146,6 +148,7 @@ public class Player implements Serializable {
 				this.lives = pl.lives;
 				this.game_over = pl.game_over;
 				this.power = pl.power;
+				this.level = pl.level;
 			} catch (ClassNotFoundException e) {
 				problem = true;
 			}
@@ -221,6 +224,17 @@ public class Player implements Serializable {
 
 	public void setPower(SuperPower power) {
 		this.power = power;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		if (level <= 0 || level > 10) {
+			return;
+		}
+		this.level = level;
 	}
 
 }

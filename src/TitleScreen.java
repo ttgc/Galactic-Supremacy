@@ -27,6 +27,8 @@ import org.newdawn.slick.util.FontUtils;
 
 public class TitleScreen extends BasicGameState {
 	private Image back;
+	private Image button;
+	private StateBasedGame game;
 	//private HUD hud;
 
 	public TitleScreen() {
@@ -40,8 +42,10 @@ public class TitleScreen extends BasicGameState {
 		Level.initFont();
 		Ennemy.initHitbox();
 		back = new Image("Pictures/background.png");
+		button = new Image("Pictures/button.png");
 		gc.setMusicOn(true);
 		gc.setSoundOn(true);
+		game = sbg;
 		
 		//testing
 		/*hud = new HUD(gc.getGraphics());
@@ -57,17 +61,24 @@ public class TitleScreen extends BasicGameState {
 		g.drawImage(back, 0, 0);
 		g.setColor(new Color(255,255,255));
 		FontUtils.drawCenter(Level.fonts[0], "Galactic Supremacy", 0, 16, 800, g.getColor());
+		int nbr_button = 4;
+		float auto_height = 500.f/((float)nbr_button);
+		String[] buttons_text = {"Jouer","Boutique","Parametres","Quitter"};
+		for (int i=0;i<nbr_button;i++) {
+			button.drawCentered(400, 48+auto_height*i+(auto_height/2.f));
+			FontUtils.drawCenter(Level.fonts[1], buttons_text[i], 0, (int)(48+auto_height*i+(auto_height/2.f)-6), 800, new Color(0,0,0));
+		}
 		g.resetFont();
 		FontUtils.drawCenter(g.getFont(), "Copyright (c) 2017, 2018 PIOT Thomas", 0, 568, 800, g.getColor());
 		
 		//testing
-		Player player = Game.player;
+		/*Player player = Game.player;
 		player.getShip().setX(300);
 		player.getShip().setY(300);
 		Level.player_res[0].drawCentered((float)player.getShip().getX(), (float)player.getShip().getY());
 		Level.player_res[player.getShip().getCanon().getID()+2].drawCentered((float)player.getShip().getX()+0.5f, (float)player.getShip().getY()-10);
 		Level.player_res[6].setAlpha(0.5f);
-		Level.player_res[6].drawCentered((float)player.getShip().getX(), (float)player.getShip().getY());
+		Level.player_res[6].drawCentered((float)player.getShip().getX(), (float)player.getShip().getY());*/
 		/*g.setFont(Level.fonts[0]);
 		g.setBackground(new Color(171, 0, 154));
 		g.setColor(new Color(0, 0, 0));
@@ -77,6 +88,39 @@ public class TitleScreen extends BasicGameState {
 		g.resetFont();
 		hud.renderHUD();*/
 
+	}
+	
+	@Override
+	public void mouseClicked(int button, int x, int y, int clickCount) {
+		// TODO Auto-generated method stub
+		super.mouseClicked(button, x, y, clickCount);
+		Hitbox click_zone = new Hitbox(this.button.getWidth(), this.button.getHeight());
+		int nbr_button = 4;
+		float auto_height = 500.f/((float)nbr_button);
+		for (int i=0;i<nbr_button;i++) {
+			click_zone.update(400, 48+auto_height*i+(auto_height/2.f));
+			if (click_zone.check_collision_point(x, y)) {
+				switch (i) {
+				case 0:
+					//jouer
+					game.enterState(9+Game.player.getLevel());
+					break;
+				case 1:
+					//boutique
+					game.enterState(3);
+					break;
+				case 2:
+					//settings
+					game.enterState(2);
+					break;
+				case 3:
+					//quitter
+					Game.player.save();
+					System.exit(0);
+					break;
+				}
+			}
+		}
 	}
 
 	@Override
