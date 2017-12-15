@@ -43,6 +43,7 @@ public class Game extends StateBasedGame {
 		addState(new SettingsRoom());
 		addState(new Shop());
 		addState(new LoadingScreen());
+		addState(new Worldmap());
 
 	}
 
