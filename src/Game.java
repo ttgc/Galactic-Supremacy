@@ -40,6 +40,7 @@ public class Game extends StateBasedGame {
 		// TODO Auto-generated method stub
 		addState(new TitleScreen());
 		addState(new GameOverScreen());
+		addState(new SettingsRoom());
 		addState(new Shop());
 
 	}

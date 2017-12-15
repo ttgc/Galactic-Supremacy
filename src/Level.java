@@ -41,6 +41,8 @@ public abstract class Level extends BasicGameState {
 	private boolean canshoot;
 	private int cdcalculator;
 	private int recovcalculator;
+	private int shieldcalculator;
+	private int shieldregencalculator;
 	protected Vector<Shoot> existing_shoot;
 	protected Vector<Ennemy> ennemies;
 	protected Vector<Powerup> powerup;
@@ -61,6 +63,8 @@ public abstract class Level extends BasicGameState {
 		canshoot = true;
 		cdcalculator = 0;
 		recovcalculator = 0;
+		shieldcalculator = 0;
+		shieldregencalculator = 0;
 		existing_shoot = new Vector<Shoot>();
 		ennemies = new Vector<Ennemy>();
 		powerup = new Vector<Powerup>();
@@ -68,7 +72,7 @@ public abstract class Level extends BasicGameState {
 		canonheat = false;
 		hud = new HUD(gc.getGraphics());
 		hud.setFull(!Game.settings.isMinimal_hud());
-
+		
 	}
 
 	@Override
@@ -113,6 +117,8 @@ public abstract class Level extends BasicGameState {
 			}
 		}
 		if (key == Keyboard.KEY_2 && player.getShip().getShield() != null) {
+			shieldcalculator = 0;
+			shieldregencalculator = 0;
 			if (player.getShip().getShield().isActiv()) {
 				player.getShip().getShield().disable();
 			} else {
@@ -177,6 +183,24 @@ public abstract class Level extends BasicGameState {
 		if (recovcalculator >= 10000) {
 			player.getShip().recharge(1);
 			recovcalculator = 0;
+		}
+		if (player.getShip().getShield() != null && player.getShip().getShield().isActiv() && player.getShip().getShield().getActive_max_time() != 0) {
+			shieldcalculator += delta;
+			if (shieldcalculator >= player.getShip().getShield().getActive_max_time()*1000) {
+				player.getShip().getShield().disable();
+				shieldcalculator = 0;
+			}
+		}
+		if (player.getShip().getShield() != null && player.getShip().getShield().isRegenerate() && !player.getShip().getShield().isActiv()) {
+			shieldregencalculator += delta;
+			if (shieldregencalculator >= 10000) {
+				if (player.getShip().getShield().getHPmax() < player.getShip().getShield().getHP()+((int) (player.getShip().getShield().getRegen()*player.getShip().getShield().getHPmax()))) {
+					player.getShip().getShield().setHP(player.getShip().getShield().getHPmax());
+				} else {
+					player.getShip().getShield().setHP(player.getShip().getShield().getHP()+((int) (player.getShip().getShield().getRegen()*player.getShip().getShield().getHPmax())));
+				}
+				shieldregencalculator = 0;
+			}
 		}
 		
 		if (canonheat) {

@@ -16,6 +16,11 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+import java.util.Random;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -96,7 +101,77 @@ public class Shop extends BasicGameState {
 		} else if (key == Keyboard.KEY_RIGHT) {
 			manager.swapright();
 		} else if (key == Keyboard.KEY_RETURN) {
-			manager.buy(Game.player);
+			JFrame frame = new JFrame();
+			if (manager.buy(Game.player)) {
+				float alea = (float)Math.random();
+				if (alea < 0.35f) {
+					alea += 0.4f;
+				} else if (alea > 0.85f) {
+					alea -= 0.2f;
+				}
+				Random rdm = new Random();
+				boolean refund = false;
+				switch (manager.getID()) {
+				case 0:
+					Canon cnd = new DoubleCanon(500+rdm.nextInt(1001), alea);
+					refund = !Game.player.add_cannon(cnd);
+					break;
+				case 1:
+					Canon cnt = new TripleCanon(500+rdm.nextInt(1501), alea);
+					refund = !Game.player.add_cannon(cnt);
+					break;
+				case 2:
+					Canon cnq = new QuintupleCanon(750+rdm.nextInt(501), alea);
+					refund = !Game.player.add_cannon(cnq);
+					break;
+				case 3:
+					try {
+						Shield sdp = new Shield(500, 0, false, false, 5, 0);
+						refund = !Game.player.add_shield(sdp);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if (refund) {
+					Game.player.earnmoney(manager.getPrice());
+					ShopManager.resetBought(manager.getID());
+					if (Game.settings.isFullscreen()) {
+						try {
+							game.getContainer().setFullscreen(false);
+						} catch (SlickException e) {
+							e.printStackTrace();
+						}
+					}
+					JOptionPane.showMessageDialog(frame, "Achat impossible !\nVotre inventaire est plein !", "Achat impossible", JOptionPane.ERROR_MESSAGE);
+					if (Game.settings.isFullscreen()) {
+						try {
+							game.getContainer().setFullscreen(true);
+						} catch (SlickException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			} else {
+				if (Game.settings.isFullscreen()) {
+					try {
+						game.getContainer().setFullscreen(false);
+					} catch (SlickException e) {
+						e.printStackTrace();
+					}
+				}
+				if (manager.isBought() && manager.isOnlyonetime()) {
+					JOptionPane.showMessageDialog(frame, "Achat impossible !\nCet objet a deja ete achete et ne peut l'etre qu'une seule fois", "Achat impossible", JOptionPane.ERROR_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(frame, "Achat impossible !\nVous n'avez pas assez de POO", "Achat impossible", JOptionPane.ERROR_MESSAGE);
+				}
+				if (Game.settings.isFullscreen()) {
+					try {
+						game.getContainer().setFullscreen(true);
+					} catch (SlickException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 	

@@ -48,6 +48,7 @@ public class TitleScreen extends BasicGameState {
 		game = sbg;
 		
 		//testing
+		//Game.player.earnmoney(9999999);
 		/*hud = new HUD(gc.getGraphics());
 		Game.player.getShip().getCanon().setHeat(50);
 		Game.player.getShip().consume(10);*/

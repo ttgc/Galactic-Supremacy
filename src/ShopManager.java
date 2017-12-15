@@ -76,7 +76,10 @@ public class ShopManager {
 			}
 		}
 		if (!(bought[getid] && onlyonetime[getid])) {
-			return customer.pay(prices[getid]);
+			if (customer.pay(prices[getid])) {
+				bought[getid] = true;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -214,6 +217,13 @@ public class ShopManager {
 			bought[i] = false;
 			onlyonetime[i] = false;
 		}
+		onlyonetime[0] = true;
+		onlyonetime[1] = true;
+		onlyonetime[2] = true;
+	}
+	
+	public static void resetBought(int id) {
+		bought[id] = false;
 	}
 
 	public static boolean[] getBought() {

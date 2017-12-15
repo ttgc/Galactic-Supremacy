@@ -108,6 +108,26 @@ public class Player implements Serializable {
 		return power.use(this, mobs);
 	}
 	
+	public boolean add_cannon(Canon cn) {
+		for (int i=0;i<canon_inv.length;i++) {
+			if (canon_inv[i] == null) {
+				canon_inv[i] = cn;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean add_shield(Shield sd) {
+		for (int i=0;i<shield_inv.length;i++) {
+			if (shield_inv[i] == null) {
+				shield_inv[i] = sd;
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void save() {
 		File f = new File("Save/"+name+".sav");
 		ObjectOutputStream file = null;

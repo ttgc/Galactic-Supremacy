@@ -34,7 +34,7 @@ public class Settings implements Serializable {
 
 	public Settings() {
 		// TODO Auto-generated constructor stub
-		minimal_hud = true;
+		minimal_hud = false;
 		fullscreen = false;
 	}
 	
