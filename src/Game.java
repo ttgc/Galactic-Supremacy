@@ -44,6 +44,7 @@ public class Game extends StateBasedGame {
 		addState(new Shop());
 		addState(new LoadingScreen());
 		addState(new Worldmap());
+		addState(new Level_1());
 
 	}
 
@@ -57,7 +58,7 @@ public class Game extends StateBasedGame {
 		initPlayer();
 		initSettings();
 		ShopManager.initShops();
-
+		
 		AppGameContainer app;
 		try {
 			app = new AppGameContainer(new Game("Galactic Supremacy"));

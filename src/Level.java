@@ -23,6 +23,7 @@ import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
@@ -46,9 +47,11 @@ public abstract class Level extends BasicGameState {
 	protected Vector<Shoot> existing_shoot;
 	protected Vector<Ennemy> ennemies;
 	protected Vector<Powerup> powerup;
+	protected Vector<Wall> obstacle;
 	protected Rocket rck;
 	private boolean canonheat;
 	private HUD hud;
+	protected Image back;
 	
 	public Level() {
 		// TODO Auto-generated constructor stub
@@ -68,10 +71,14 @@ public abstract class Level extends BasicGameState {
 		existing_shoot = new Vector<Shoot>();
 		ennemies = new Vector<Ennemy>();
 		powerup = new Vector<Powerup>();
+		obstacle = new Vector<Wall>();
 		rck = null;
 		canonheat = false;
 		hud = new HUD(gc.getGraphics());
 		hud.setFull(!Game.settings.isMinimal_hud());
+		back = new Image("Pictures/background.png");
+		player.getShip().setX(400);
+		player.getShip().setY(550);
 		
 	}
 
@@ -79,38 +86,32 @@ public abstract class Level extends BasicGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g)
 			throws SlickException {
 		// TODO Auto-generated method stub
-		hud.renderHUD();
+		g.drawImage(back, 0, 0);
+		for (int i=0;i<powerup.size();i++) {
+			powerup_res[powerup.get(i).getID()].drawCentered((float)powerup.get(i).getX(), (float)powerup.get(i).getY());
+		}
+		for (int i=0;i<ennemies.size();i++) {
+			ennemies_res[ennemies.get(i).getId()].drawCentered((float)ennemies.get(i).getX(), (float)ennemies.get(i).getY());
+		}
+		if (rck != null) {
+			player_res[1].drawCentered((float)rck.getX(), (float)rck.getY());
+		}
 		player_res[0].drawCentered((float)player.getShip().getX(), (float)player.getShip().getY());
 		player_res[player.getShip().getCanon().getID()+2].drawCentered((float)player.getShip().getX()+0.5f, (float)player.getShip().getY()-10);
 		if (player.getShip().getShield() != null && player.getShip().getShield().isActiv()) {
 			player_res[6].setAlpha(0.5f);
 			player_res[6].drawCentered((float)player.getShip().getX(), (float)player.getShip().getY());
 		}
+		for (int i=0;i<existing_shoot.size();i++) {
+			ressources[1].drawCentered((float)existing_shoot.get(i).getX(), (float)existing_shoot.get(i).getY());
+		}
+		hud.renderHUD();		
 	}
 	
 	@Override
 	public void keyPressed(int key, char c) {
 		// TODO Auto-generated method stub
-		if (key == Keyboard.KEY_LEFT && player.getShip().getX() > 32) {
-			player.getShip().setX(player.getShip().getX()-1);
-		}
-		if (key == Keyboard.KEY_RIGHT && player.getShip().getX() < 768) {
-			player.getShip().setX(player.getShip().getX()+1);
-		}
-		if (key == Keyboard.KEY_DOWN && player.getShip().getY() > 32) {
-			player.getShip().setY(player.getShip().getY()-1);
-		}
-		if (key == Keyboard.KEY_UP && player.getShip().getY() < 568) {
-			player.getShip().setY(player.getShip().getY()+1);
-		}
-		if (key == Keyboard.KEY_SPACE && canshoot) {
-			canshoot = false;
-			Shoot[] tirs = player.getShip().getCanon().shoot(player.getShip().getX(),player.getShip().getY());
-			for (int i=0;i<tirs.length;i++) {
-				existing_shoot.add(tirs[i]);
-			}
-		}
-		if (key == Keyboard.KEY_1 && player.getShip().getRck_stock() > 0 && rck != null) {
+		if (key == Keyboard.KEY_1 && player.getShip().getRck_stock() > 0 && rck == null) {
 			//missile
 			if (player.getShip().consume(10)) {
 				rck = player.getShip().use_rocket();
@@ -128,10 +129,33 @@ public abstract class Level extends BasicGameState {
 		if (key == Keyboard.KEY_3 && (!player.getShip().getCanon().isOverheat())) {
 			player.getShip().getCanon().overclock();
 		}
-		if (key == Keyboard.KEY_4 && player.getPower().isAvalaible() && (!player.getPower().isUsed())) {
+		if (key == Keyboard.KEY_4 && player.getPower() != null && player.getPower().isAvalaible() && (!player.getPower().isUsed())) {
 			switch (player.getPower().getID()) {
 			default:
 				player.use_power(null);
+			}
+		}
+	}
+	
+	public void permaKey(Input input) {
+		// TODO Auto-generated method stub
+		if (input.isKeyDown(Input.KEY_LEFT) && player.getShip().getX() > 32) {
+			player.getShip().setX(player.getShip().getX()-1);
+		}
+		if (input.isKeyDown(Input.KEY_RIGHT) && player.getShip().getX() < 768) {
+			player.getShip().setX(player.getShip().getX()+1);
+		}
+		if (input.isKeyDown(Input.KEY_DOWN) && player.getShip().getY() < 568) {
+			player.getShip().setY(player.getShip().getY()+1);
+		}
+		if (input.isKeyDown(Input.KEY_UP) && player.getShip().getY() > 32) {
+			player.getShip().setY(player.getShip().getY()-1);
+		}
+		if (input.isKeyDown(Input.KEY_SPACE) && canshoot) {
+			canshoot = false;
+			Shoot[] tirs = player.getShip().getCanon().shoot(player.getShip().getX(),player.getShip().getY());
+			for (int i=0;i<tirs.length;i++) {
+				existing_shoot.add(tirs[i]);
 			}
 		}
 	}
@@ -170,6 +194,7 @@ public abstract class Level extends BasicGameState {
 						rck = null;
 					}
 				}
+				permaKey(gc.getInput());
 			}
 		} 
 		if (!canshoot) {
@@ -207,12 +232,14 @@ public abstract class Level extends BasicGameState {
 			if (player.getShip().getCanon().getHeat() == 0) {
 				player.getShip().getCanon().reload();
 				canonheat = false;
+				canshoot = true;
+				cdcalculator = 0;
 			}
 		} else {
 			canonheat = player.getShip().getCanon().isOverheat();
 		}
 	}
-	
+
 	private void powerup_col() {
 		for (int i=0;i<powerup.size();i++) {
 			powerup.get(i).tick();
@@ -313,6 +340,12 @@ public abstract class Level extends BasicGameState {
 	
 	public void spawn(double x, double y, int dir, int id, int hp) throws Exception {
 		ennemies.add(new Ennemy(x, y, dir, id, hp));
+	}
+	
+	protected void scrolling_init() {
+		for (int i=0;i<obstacle.size();i++) {
+			obstacle.get(i).setGravity(true);
+		}
 	}
 	
 	public Vector<Shoot> getExisting_shoot() {

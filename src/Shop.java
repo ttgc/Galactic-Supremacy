@@ -48,9 +48,10 @@ public class Shop extends BasicGameState {
 		ShopManager.import_data();
 		int[] avalaible = null;
 		if (Game.player.getLevel() < 10) {
-			avalaible = new int[2];
+			avalaible = new int[3];
 			avalaible[0] = 0;
 			avalaible[1] = 3;
+			avalaible[2] = 4;
 		} else if (Game.player.getLevel() < 20) {
 			
 		} else if (Game.player.getLevel() < 30) {
@@ -61,7 +62,7 @@ public class Shop extends BasicGameState {
 		manager = new ShopManager(avalaible);
 		button = new Image("Pictures/button.png");
 		back = new Image("Pictures/background.png");
-		sprites = new Image[4];
+		sprites = new Image[5];
 		initSprites();
 		game = sbg;
 
@@ -131,6 +132,11 @@ public class Shop extends BasicGameState {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+					break;
+				case 4:
+					Canon cnb = new BasicCanon(250+rdm.nextInt(500), alea);
+					refund = !Game.player.add_cannon(cnb);
+					break;
 				}
 				if (refund) {
 					Game.player.earnmoney(manager.getPrice());
@@ -201,8 +207,9 @@ public class Shop extends BasicGameState {
 	
 	private void initSprites() throws SlickException {
 		// TODO Auto-generated method stub
-		sprites[0] = new Image("Pictures/canon.png");
-		sprites[3] = new Image("Pictures/shield.png");
+		sprites[0] = new Image("Pictures/canon_shop.png");
+		sprites[3] = new Image("Pictures/shield_shop.png");
+		sprites[4] = new Image("Pictures/canon_shop.png");
 		
 	}
 

@@ -29,7 +29,7 @@ public class ShopManager {
 
 	public ShopManager(int[] id_avalaible) {
 		// TODO Auto-generated constructor stub
-		int nbr = 4;
+		int nbr = 5;
 		name = new String[nbr];
 		description = new String[nbr];
 		prices = new int[nbr];
@@ -191,6 +191,10 @@ public class ShopManager {
 		name[3] = "Bouclier protecteur";
 		description[3] = "Un bouclier qui protege votre vaisseau de 500 points de degats";
 		prices[3] = 500;
+		//item 4 = Basic Canon
+		name[4] = "Canon Standard";
+		description[4] = "Un canon standard qui tire un seul laser";
+		prices[4] = 200;
 
 	}
 	
@@ -210,7 +214,7 @@ public class ShopManager {
 	}
 	
 	public static void initShops() {
-		int nbr = 4;
+		int nbr = 5;
 		bought = new boolean[nbr];
 		onlyonetime = new boolean[nbr];
 		for (int i=0;i<nbr;i++) {
