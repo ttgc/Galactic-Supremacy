@@ -38,7 +38,7 @@ public class Wall {
 		y = y_nw+(height/2);
 		hitbox = new Hitbox(width, height);
 		hitbox.update(x, y);
-		direction = 0;
+		direction = -1;
 	}
 	
 	public void update() {
@@ -46,8 +46,10 @@ public class Wall {
 			y++;
 			hitbox.update(x, y);
 		}
-		x += Math.cos(Math.toRadians(direction));
-		y += -Math.sin(Math.toRadians(direction));
+		if (direction != -1) {
+			x += Math.cos(Math.toRadians(direction));
+			y += -Math.sin(Math.toRadians(direction));
+		}
 	}
 	
 	public double setMovement(double vx, double vy) {

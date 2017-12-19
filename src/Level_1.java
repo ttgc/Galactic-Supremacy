@@ -31,6 +31,7 @@ public class Level_1 extends Level {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		// TODO Auto-generated method stub
 		super.init(gc, sbg);
+		limit = 1024;
 	}
 	
 	@Override
@@ -49,6 +50,25 @@ public class Level_1 extends Level {
 	public int getID() {
 		// TODO Auto-generated method stub
 		return 10;
+	}
+
+	@Override
+	protected void initObstacle() {
+		// TODO Auto-generated method stub
+		for (int i=336;i<464;i+=32) {
+			obstacle.add(new Wall(32, 32, i, 344));
+		}
+		for (int i=0;i<256;i+=32) {
+			obstacle.add(new Wall(32, 32, i, 184));
+			obstacle.add(new Wall(32, 32, 544+i, 184));
+		}
+		for (int i=304;i<400;i+=32) {
+			obstacle.add(new Wall(32, 32, i, -328-(i-304)));
+		}
+		obstacle.add(new Wall(32, 32, 400, -424));
+		for (int i=496;i>400;i-=32) {
+			obstacle.add(new Wall(32, 32, i, -328+(i-496)));
+		}
 	}
 
 }

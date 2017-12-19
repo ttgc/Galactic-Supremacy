@@ -52,6 +52,8 @@ public abstract class Level extends BasicGameState {
 	private boolean canonheat;
 	private HUD hud;
 	protected Image back;
+	protected int limit;
+	protected int view;
 	
 	public Level() {
 		// TODO Auto-generated constructor stub
@@ -77,8 +79,12 @@ public abstract class Level extends BasicGameState {
 		hud = new HUD(gc.getGraphics());
 		hud.setFull(!Game.settings.isMinimal_hud());
 		back = new Image("Pictures/background.png");
+		limit = 0;
+		view = 0;
 		player.getShip().setX(400);
 		player.getShip().setY(550);
+		initObstacle();
+		initScrolling();
 		
 	}
 
@@ -87,6 +93,9 @@ public abstract class Level extends BasicGameState {
 			throws SlickException {
 		// TODO Auto-generated method stub
 		g.drawImage(back, 0, 0);
+		for (int i=0;i<obstacle.size();i++) {
+			ressources[2].drawCentered((float)obstacle.get(i).getX(), (float)obstacle.get(i).getY());
+		}
 		for (int i=0;i<powerup.size();i++) {
 			powerup_res[powerup.get(i).getID()].drawCentered((float)powerup.get(i).getX(), (float)powerup.get(i).getY());
 		}
@@ -195,6 +204,17 @@ public abstract class Level extends BasicGameState {
 					}
 				}
 				permaKey(gc.getInput());
+				for (int k=0;k<obstacle.size();k++) {
+					obstacle.get(k).update();
+				}
+				view += 1;
+				if (view >= limit) {
+					view = limit;
+					for (int k=0;k<obstacle.size();k++) {
+						obstacle.get(k).setGravity(false);
+					}
+				}
+				wallcheck();
 			}
 		} 
 		if (!canshoot) {
@@ -237,6 +257,14 @@ public abstract class Level extends BasicGameState {
 			}
 		} else {
 			canonheat = player.getShip().getCanon().isOverheat();
+		}
+	}
+	
+	private void wallcheck() {
+		for (int i=0;i<obstacle.size();i++) {
+			if (obstacle.get(i).isSolid() && obstacle.get(i).getHitbox().check_collision(player.getShip().getHitbox())) {
+				//pour l'instant j'en ai pas besoin
+			}
 		}
 	}
 
@@ -342,11 +370,13 @@ public abstract class Level extends BasicGameState {
 		ennemies.add(new Ennemy(x, y, dir, id, hp));
 	}
 	
-	protected void scrolling_init() {
+	protected void initScrolling() {
 		for (int i=0;i<obstacle.size();i++) {
 			obstacle.get(i).setGravity(true);
 		}
 	}
+	
+	protected abstract void initObstacle();
 	
 	public Vector<Shoot> getExisting_shoot() {
 		return existing_shoot;
@@ -373,13 +403,26 @@ public abstract class Level extends BasicGameState {
 		ressources = new Image[10];
 		ressources[0] = new Image("Pictures/life.png");
 		ressources[1] = new Image("Pictures/laser.png");
+		ressources[2] = new Image("Pictures/wall.png");
 		player_res = new Image[7];
 		player_res[0] = new Image("Pictures/ship.png");
 		player_res[1] = new Image("Pictures/rocket.png");
 		player_res[2] = new Image("Pictures/canon.png");
 		player_res[6] = new Image("Pictures/shield.png");
 		ennemies_res = new Image[10];
+		ennemies_res[0] = new Image("Pictures/ennemy1.png");
 		powerup_res = new Image[10];
+		/*******************************************
+		 * Tableau des ressources :
+		 * res 0 			= life indicator
+		 * res 1 			= laser
+		 * res 2 			= wall
+		 * player res 0 	= ship
+		 * player res 1 	= rocket
+		 * player res 2 	= basic canon
+		 * player res 3 	= shield
+		 * ennemies res 0 	= UFO ennemy
+		 *******************************************/
 	}
 	
 	@SuppressWarnings("unchecked")
