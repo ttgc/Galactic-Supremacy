@@ -47,7 +47,6 @@ public class Worldmap extends BasicGameState {
 		map.add_level(308, 236);
 		map.add_level(308, 188);
 		map.add_level(416, 108);
-		Game.player.setLevel(3);
 		ship = new Image("Pictures/ship.png");
 		game= sbg;
 

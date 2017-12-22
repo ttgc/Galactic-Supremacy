@@ -19,7 +19,11 @@
 
 import java.util.Vector;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -29,6 +33,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.FontUtils;
 
 
 public abstract class Level extends BasicGameState {
@@ -54,6 +59,7 @@ public abstract class Level extends BasicGameState {
 	protected Image back;
 	protected int limit;
 	protected int view;
+	private boolean paused;
 	
 	public Level() {
 		// TODO Auto-generated constructor stub
@@ -81,8 +87,12 @@ public abstract class Level extends BasicGameState {
 		back = new Image("Pictures/background.png");
 		limit = 0;
 		view = 0;
+		paused = false;
 		player.getShip().setX(400);
 		player.getShip().setY(550);
+		player.getShip().getHitbox().update(400, 550);
+		player.getShip().recharge(player.getShip().getEnergy_max());
+		player.getShip().getCanon().reload();
 		initObstacle();
 		initScrolling();
 		
@@ -114,12 +124,25 @@ public abstract class Level extends BasicGameState {
 		for (int i=0;i<existing_shoot.size();i++) {
 			ressources[1].drawCentered((float)existing_shoot.get(i).getX(), (float)existing_shoot.get(i).getY());
 		}
-		hud.renderHUD();		
+		hud.renderHUD();
+		if (paused) {
+			FontUtils.drawCenter(fonts[0], "PAUSE", 0, 220, 800, new Color(255,255,255));
+			FontUtils.drawCenter(fonts[0], "=========", 0, 225+fonts[0].getHeight("PAUSE"), 800, new Color(255,255,255));
+			FontUtils.drawCenter(fonts[0], "ESC = Reprendre", 0, 230+(fonts[0].getHeight("PAUSE")+fonts[0].getHeight("ESC = Reprendre")), 800, new Color(255,255,255));
+			FontUtils.drawCenter(fonts[0], "F2 = Retour au menu", 0, 235+(fonts[0].getHeight("PAUSE")+fonts[0].getHeight("ESC = Reprendre")+fonts[0].getHeight("F1 = Aide")), 800, new Color(255,255,255));
+		}
 	}
 	
 	@Override
 	public void keyPressed(int key, char c) {
 		// TODO Auto-generated method stub
+		if (key == Keyboard.KEY_ESCAPE) {
+			paused = !paused;
+		}
+		if (paused) {
+			return;
+		}
+		
 		if (key == Keyboard.KEY_1 && player.getShip().getRck_stock() > 0 && rck == null) {
 			//missile
 			if (player.getShip().consume(10)) {
@@ -148,16 +171,16 @@ public abstract class Level extends BasicGameState {
 	
 	public void permaKey(Input input) {
 		// TODO Auto-generated method stub
-		if (input.isKeyDown(Input.KEY_LEFT) && player.getShip().getX() > 32) {
+		if (input.isKeyDown(Input.KEY_LEFT) && player.getShip().getX() > 32 && wallcheck(2)) {
 			player.getShip().setX(player.getShip().getX()-1);
 		}
-		if (input.isKeyDown(Input.KEY_RIGHT) && player.getShip().getX() < 768) {
+		if (input.isKeyDown(Input.KEY_RIGHT) && player.getShip().getX() < 768 && wallcheck(0)) {
 			player.getShip().setX(player.getShip().getX()+1);
 		}
-		if (input.isKeyDown(Input.KEY_DOWN) && player.getShip().getY() < 568) {
+		if (input.isKeyDown(Input.KEY_DOWN) && player.getShip().getY() < 568 && wallcheck(3)) {
 			player.getShip().setY(player.getShip().getY()+1);
 		}
-		if (input.isKeyDown(Input.KEY_UP) && player.getShip().getY() > 32) {
+		if (input.isKeyDown(Input.KEY_UP) && player.getShip().getY() > 32 && wallcheck(1)) {
 			player.getShip().setY(player.getShip().getY()-1);
 		}
 		if (input.isKeyDown(Input.KEY_SPACE) && canshoot) {
@@ -168,11 +191,41 @@ public abstract class Level extends BasicGameState {
 			}
 		}
 	}
+	
+	private void keyF2(StateBasedGame sbg) {
+		// TODO Auto-generated method stub
+		if (sbg.getContainer().getInput().isKeyPressed(Input.KEY_F2) && paused) {
+			JFrame frame = new JFrame();
+			if (Game.settings.isFullscreen()) {
+				try {
+					sbg.getContainer().setFullscreen(false);
+				} catch (SlickException e) {
+					e.printStackTrace();
+				}
+			}
+			int result;
+			result = JOptionPane.showConfirmDialog(frame, "Retourner au menu principal ?\nVotre progression actuelle sera perdue", "Retourner au menu ?", JOptionPane.YES_NO_OPTION);
+			if (result == JOptionPane.YES_OPTION) {
+				sbg.enterState(0);
+			}
+			if (Game.settings.isFullscreen()) {
+				try {
+					sbg.getContainer().setFullscreen(true);
+				} catch (SlickException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta)
 			throws SlickException {
 		// TODO Auto-generated method stub
+		keyF2(sbg);
+		if (paused) {
+			return;
+		}
 		ticker += delta;
 		if (ticker >= 33) {
 			int frames;
@@ -191,6 +244,9 @@ public abstract class Level extends BasicGameState {
 						sbg.enterState(sbg.getCurrentStateID());
 					}
 				}
+				if (player.getShip().getCanon() == null) {
+					nocanon(sbg,gc);
+				}
 				if (rck != null) {
 					rck.tick();
 					for (int k=0;k<ennemies.size();k++) {
@@ -204,6 +260,10 @@ public abstract class Level extends BasicGameState {
 					}
 				}
 				permaKey(gc.getInput());
+				if (!wallcheck(1)) {
+					player.getShip().setY(player.getShip().getY()+1);
+				}
+				wallcheckplus();
 				for (int k=0;k<obstacle.size();k++) {
 					obstacle.get(k).update();
 				}
@@ -214,9 +274,9 @@ public abstract class Level extends BasicGameState {
 						obstacle.get(k).setGravity(false);
 					}
 				}
-				wallcheck();
+				outofbound(sbg);
 			}
-		} 
+		}
 		if (!canshoot) {
 			cdcalculator += delta;
 			if (player.getShip().getCanon().getCooldown()*1000 >= cdcalculator) {
@@ -259,13 +319,92 @@ public abstract class Level extends BasicGameState {
 			canonheat = player.getShip().getCanon().isOverheat();
 		}
 	}
-	
-	private void wallcheck() {
-		for (int i=0;i<obstacle.size();i++) {
-			if (obstacle.get(i).isSolid() && obstacle.get(i).getHitbox().check_collision(player.getShip().getHitbox())) {
-				//pour l'instant j'en ai pas besoin
+
+	private void nocanon(StateBasedGame sbg, GameContainer gc) {
+		if (Game.settings.isAuto_swap()) {
+			for (int k=0;k<player.getCanon_inv().length;k++) {
+				if (player.getCanon_inv()[k] != null) {
+					player.switch_canon(k);
+					break;
+				}
 			}
 		}
+		if (player.getShip().getCanon() == null){
+			JFrame frame = new JFrame();
+			if (Game.settings.isFullscreen()) {
+				try {
+					gc.setFullscreen(false);
+				} catch (SlickException e) {
+					e.printStackTrace();
+				}
+			}
+			JOptionPane.showMessageDialog(frame, "Votre canon a ete detruit, vous allez etre renvoye au garage !", "Canon detruit", JOptionPane.INFORMATION_MESSAGE);
+			if (Game.settings.isFullscreen()) {
+				try {
+					gc.setFullscreen(true);
+				} catch (SlickException e) {
+					e.printStackTrace();
+				}
+			}
+			sbg.enterState(6);
+		}
+	}
+
+	private void outofbound(StateBasedGame sbg) {
+		Hitbox screen = new Hitbox(800, 600);
+		screen.update(400, 300);
+		if (!screen.check_collision(player.getShip().getHitbox())) {
+			//sortie d'écran totale
+			player.lose_life();
+			if (player.isGame_over()) {
+				sbg.enterState(1);
+			} else {
+				sbg.enterState(sbg.getCurrentStateID());
+			}
+		}
+	}
+
+	private void wallcheckplus() {
+		Hitbox calc = new Hitbox(player.getShip().getHitbox());
+		for (int i=0;i<obstacle.size();i++) {
+			if (obstacle.get(i).isSolid() && obstacle.get(i).getDirection() != -1) {
+				calc.update(player.getShip().getX()+Math.cos(Math.toRadians(obstacle.get(i).getDirection())), player.getShip().getY()-Math.sin(Math.toRadians(obstacle.get(i).getDirection())));
+				if (obstacle.get(i).getHitbox().check_collision(calc)) {
+					player.getShip().setX(player.getShip().getX()+Math.cos(Math.toRadians(obstacle.get(i).getDirection())));
+					player.getShip().setY(player.getShip().getY()-Math.sin(Math.toRadians(obstacle.get(i).getDirection())));
+				}
+			}
+		}
+	}
+
+	private boolean wallcheck(int side) {
+		/**side list
+		 * 0 = East
+		 * 1 = North
+		 * 2 = West
+		 * 3 = South
+		 */
+		Hitbox calc = new Hitbox(player.getShip().getHitbox());
+		switch (side) {
+		case 0:
+			calc.update(calc.getXor()+1, calc.getYor());
+			break;
+		case 1:
+			calc.update(calc.getXor(), calc.getYor()-1);
+			break;
+		case 2:
+			calc.update(calc.getXor()-1, calc.getYor());
+			break;
+		case 3:
+			calc.update(calc.getXor(), calc.getYor()+1);
+			break;
+		}
+		for (int i=0;i<obstacle.size();i++) {
+			if (obstacle.get(i).isSolid() && obstacle.get(i).getHitbox().check_collision(calc)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void powerup_col() {
@@ -292,9 +431,15 @@ public abstract class Level extends BasicGameState {
 				if (k == i) {
 					continue;
 				}
-				if (ennemies.get(i).getHitbox().check_collision(ennemies.get(k).getHitbox())) {
-					ennemies.get(i).bounce(0); //need change
-					ennemies.get(k).bounce(0); //need change
+				if (ennemies.get(i).getRhitbox().check_collision(ennemies.get(k).getRhitbox())) {
+					ennemies.get(i).bounce(ennemies.get(i).getRhitbox().angle_tan(ennemies.get(i).getDirection())); 
+					ennemies.get(k).bounce(ennemies.get(k).getRhitbox().angle_tan(ennemies.get(k).getDirection())); 
+				}
+			}
+			
+			for (int k=0;k<obstacle.size();k++) {
+				if (ennemies.get(i).getHitbox().check_collision(obstacle.get(k).getHitbox())) {
+					ennemies.get(i).bounce(0);
 				}
 			}
 			
@@ -347,6 +492,18 @@ public abstract class Level extends BasicGameState {
 						if (player.getShip().getShield() != null && player.getShip().getShield().isActiv() && player.getShip().getShield().isReflectiv()) {
 							existing_shoot.get(i).bounce(0); //angle a modifier
 						}
+				}
+			}
+			
+			//collision obstacle
+			for (int k=0;k<obstacle.size();k++) {
+				if (obstacle.get(k).getHitbox().check_collision_point(existing_shoot.get(i).getX(), existing_shoot.get(i).getY())) {
+					if (obstacle.get(k).isReflect()) {
+						existing_shoot.get(i).bounce(0);
+					} else {
+						existing_shoot.get(i).setCollision(true);
+					}
+					break;
 				}
 			}
 			

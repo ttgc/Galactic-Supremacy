@@ -62,6 +62,14 @@ public class RoundHitbox implements Serializable {
 	public static double norme(double x, double y) {
 		return Math.sqrt((x*x)+(y*y));
 	}
+	
+	public double angle_tan(double direction) {
+		/*double x,y;
+		x = r*Math.cos(Math.toRadians(direction));
+		y = r*Math.sin(Math.toRadians(direction));
+		double[] vecOA = {x-xor,y-yor};*/
+		return 0;
+	}
 
 	public int getR() {
 		return r;

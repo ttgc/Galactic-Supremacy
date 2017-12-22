@@ -66,7 +66,7 @@ public class Shoot {
 	}
 	
 	public int bounce(double angle) {
-		
+		direction = (int) ((180-direction)+(2*angle));
 		return direction;
 	}
 

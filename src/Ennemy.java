@@ -21,6 +21,7 @@ import java.util.Random;
 public class Ennemy {
 	protected static Hitbox[] hitbox_ref;
 	protected Hitbox hitbox;
+	protected RoundHitbox rhitbox;
 	protected double x;
 	protected double y;
 	protected int direction;
@@ -40,11 +41,12 @@ public class Ennemy {
 		HP = hp;
 		alive = true;
 		hitbox = new Hitbox(hitbox_ref[res_i]);
+		rhitbox = new RoundHitbox(hitbox);
 		hitbox.update(x, y);
 	}
 	
 	public int bounce(double angle) {
-		//idk
+		direction = (int) ((180-direction)+(2*angle));
 		return direction;
 	}
 	
@@ -120,6 +122,10 @@ public class Ennemy {
 
 	public static Hitbox[] getHitbox_ref() {
 		return hitbox_ref;
+	}
+
+	public RoundHitbox getRhitbox() {
+		return rhitbox;
 	}
 
 }
