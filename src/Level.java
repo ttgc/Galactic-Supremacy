@@ -35,6 +35,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
+import basics.Hitbox;
+
 
 public abstract class Level extends BasicGameState {
 	protected static Image[] ressources;

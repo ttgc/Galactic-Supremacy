@@ -18,6 +18,7 @@
 
 import java.io.Serializable;
 
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 public abstract class SuperPower implements Serializable {
@@ -26,6 +27,8 @@ public abstract class SuperPower implements Serializable {
 	protected boolean used;
 	protected boolean avalaible;
 	protected boolean inuse;
+	protected int time;
+	public static Level lvl;
 
 	public SuperPower(Image spr) {
 		// TODO Auto-generated constructor stub
@@ -33,14 +36,16 @@ public abstract class SuperPower implements Serializable {
 		used = false;
 		avalaible = false;
 		inuse = false;
+		time = 0;
 	}
 	
-	public boolean use(Player player, Ennemy[] mobs) {
+	public boolean use(Player player, Level lvl) {
 		if ((!used) && avalaible) {
 			used = true;
 			avalaible = false;
 			inuse = true;
-			effect(player,mobs);
+			SuperPower.lvl = lvl;
+			effect(player,lvl);
 			return true;
 		}
 		return false;
@@ -49,16 +54,26 @@ public abstract class SuperPower implements Serializable {
 	public void stop() {
 		if (inuse) {
 			inuse = false;
+			time = 0;
 			reset();
 		}
 	}
 	
 	protected abstract void reset();
 
-	protected abstract void effect(Player player, Ennemy[] mobs);
+	protected abstract void effect(Player player, Level lvl);
 	
 	public void resetuse() {
 		used = false;
+	}
+	
+	public abstract void drawme(Graphics g);
+	
+	protected abstract void refresh();
+	
+	public void update() {
+		time++;
+		refresh();
 	}
 	
 	public abstract int getID();

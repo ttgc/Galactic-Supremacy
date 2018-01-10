@@ -1,3 +1,5 @@
+import basics.Hitbox;
+
 /*******************************************************************************
 	Galactic Supremacy, Shoot'em up game
 	Copyright (C) 2017, 2018  PIOT Thomas

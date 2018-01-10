@@ -18,6 +18,9 @@
 
 import java.util.Random;
 
+import basics.Hitbox;
+import basics.RoundHitbox;
+
 public class Ennemy {
 	protected static Hitbox[] hitbox_ref;
 	protected Hitbox hitbox;

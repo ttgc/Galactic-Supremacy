@@ -18,6 +18,8 @@
 
 import java.io.Serializable;
 
+import basics.Hitbox;
+
 public class Ship implements Serializable {
 	private static final long serialVersionUID = 7871425991978808270L;
 	private int HP;
@@ -85,6 +87,10 @@ public class Ship implements Serializable {
 		return HP;
 	}
 	
+	public void fullheal() {
+		HP = HPmax;
+	}
+	
 	public boolean damage(int amount) {
 		boolean shielded = false;
 		if (shield != null && shield.isActiv()) {
@@ -139,7 +145,7 @@ public class Ship implements Serializable {
 			canon = null;
 		}
 		counttick++;
-		if (counttick >= 60) {
+		if (counttick >= 30) {
 			counttick = 0;
 			canon.setHeat(canon.getHeat()-1);
 			if (shield != null && shield.isRegenerate()) {
@@ -246,6 +252,10 @@ public class Ship implements Serializable {
 
 	public boolean isAlive() {
 		return alive;
+	}
+	
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 
 	public Hitbox getHitbox() {

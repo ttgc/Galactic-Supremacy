@@ -31,11 +31,23 @@ public class Settings implements Serializable {
 	private static final long serialVersionUID = -1089513243433716745L;
 	private boolean minimal_hud;
 	private boolean fullscreen;
+	private boolean auto_swap;
+	private Keymap map;
+	private int music_volume;
+	private int sound_volume;
+	private boolean music_mute;
+	private boolean sound_mute;
 
 	public Settings() {
 		// TODO Auto-generated constructor stub
 		minimal_hud = false;
 		fullscreen = false;
+		auto_swap = true;
+		map = new Keymap();
+		music_volume = 100;
+		sound_volume = 100;
+		music_mute = false;
+		sound_mute = false;
 	}
 	
 	public void save() {
@@ -115,6 +127,56 @@ public class Settings implements Serializable {
 
 	public void setFullscreen(boolean fullscreen) {
 		this.fullscreen = fullscreen;
+	}
+
+	public boolean isAuto_swap() {
+		return auto_swap;
+	}
+
+	public void setAuto_swap(boolean auto_swap) {
+		this.auto_swap = auto_swap;
+	}
+
+	public Keymap getMap() {
+		return map;
+	}
+
+	public int getMusic_volume() {
+		return music_volume;
+	}
+
+	public void setMusic_volume(int music_volume) {
+		if (music_volume < 0 || music_volume > 100) {
+			return;
+		}
+		this.music_volume = music_volume;
+	}
+
+	public int getSound_volume() {
+		return sound_volume;
+	}
+
+	public void setSound_volume(int sound_volume) {
+		if (sound_volume < 0 || sound_volume > 100) {
+			return;
+		}
+		this.sound_volume = sound_volume;
+	}
+
+	public boolean isMusic_mute() {
+		return music_mute;
+	}
+
+	public void setMusic_mute(boolean music_mute) {
+		this.music_mute = music_mute;
+	}
+
+	public boolean isSound_mute() {
+		return sound_mute;
+	}
+
+	public void setSound_mute(boolean sound_mute) {
+		this.sound_mute = sound_mute;
 	}
 	
 }

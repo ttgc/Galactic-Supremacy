@@ -28,6 +28,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
+import basics.Hitbox;
+
 
 public class SettingsRoom extends BasicGameState {
 	private Settings settings;
@@ -57,10 +59,10 @@ public class SettingsRoom extends BasicGameState {
 		g.drawImage(back, 0, 0);
 		g.setColor(new Color(255,255,255));
 		FontUtils.drawCenter(Level.fonts[0], "Parametres", 0, 32, 800, g.getColor());
-		int nbr_options = 2;
+		int nbr_options = 3;
 		float height_auto = 400.f/nbr_options;
-		String[] labels = {"Fullscreen","Affichage minimal"};
-		boolean[] cheker = {settings.isFullscreen(),settings.isMinimal_hud()};
+		String[] labels = {"Fullscreen","Affichage minimal","Changement auto canon"};
+		boolean[] cheker = {settings.isFullscreen(),settings.isMinimal_hud(),settings.isAuto_swap()};
 		for (int i=0;i<nbr_options;i++) {
 			FontUtils.drawCenter(Level.fonts[1], labels[i], 0, (int) (100+(i+1)*(height_auto/2)-6), 600);
 			g.fillRect(690, 100+(i+1)*(height_auto/2), 20, 20);
@@ -89,7 +91,7 @@ public class SettingsRoom extends BasicGameState {
 		// TODO Auto-generated method stub
 		super.mouseClicked(button, x, y, clickCount);
 		Hitbox click_zone = new Hitbox(20,20);
-		int nbr_options = 2;
+		int nbr_options = 3;
 		float height_auto = 400.f/nbr_options;
 		float posy_min = 100+nbr_options*(height_auto/2)+64;
 		float inter = 800-128-2*this.button.getWidth();
@@ -112,6 +114,8 @@ public class SettingsRoom extends BasicGameState {
 				case 1:
 					settings.setMinimal_hud(!settings.isMinimal_hud());
 					break;
+				case 2:
+					settings.setAuto_swap(!settings.isAuto_swap());
 				}
 				settings.save();
 			}
@@ -124,8 +128,6 @@ public class SettingsRoom extends BasicGameState {
 			game.enterState(0);
 		}
 		click_zone.update((64+this.button.getWidth())+(this.button.getWidth()/2)+inter, posy_min+this.button.getHeight()/2);
-		System.out.println(x+";"+y);
-		System.out.println((64+this.button.getWidth())+(this.button.getWidth()/2)+inter);
 		if (click_zone.check_collision_point(x, y)) {
 			if (Game.settings.isFullscreen()) {
 				try {

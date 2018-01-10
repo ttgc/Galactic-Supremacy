@@ -19,6 +19,9 @@
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import basics.Jauge;
+import basics.ProgressJauge;
+
 public class HUD {
 	private Graphics g;
 	private boolean full;

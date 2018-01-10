@@ -25,6 +25,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
+import basics.Hitbox;
+
 public class TitleScreen extends BasicGameState {
 	private Image back;
 	private Image button;
@@ -104,7 +106,7 @@ public class TitleScreen extends BasicGameState {
 				switch (i) {
 				case 0:
 					//jouer
-					game.enterState(9+Game.player.getLevel());
+					game.enterState(4);
 					break;
 				case 1:
 					//boutique

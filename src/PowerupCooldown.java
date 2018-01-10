@@ -36,4 +36,10 @@ public class PowerupCooldown extends Powerup {
 
 	}
 
+	@Override
+	public int getID() {
+		// TODO Auto-generated method stub
+		return 1;
+	}
+
 }

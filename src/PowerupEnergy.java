@@ -40,4 +40,10 @@ public class PowerupEnergy extends Powerup {
 
 	}
 
+	@Override
+	public int getID() {
+		// TODO Auto-generated method stub
+		return 2;
+	}
+
 }

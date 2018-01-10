@@ -23,12 +23,14 @@ import javax.swing.JOptionPane;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class Game extends StateBasedGame {
 	public static Player player;
 	public static Settings settings;
+	public static Music music;
 
 	public Game(String name) {
 		super(name);
@@ -46,6 +48,18 @@ public class Game extends StateBasedGame {
 		addState(new Worldmap());
 		addState(new Level_1());
 
+	}
+	
+	@Override
+	public void enterState(int id) {
+		// TODO Auto-generated method stub
+		try {
+			getState(id).init(getContainer(), this);
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		super.enterState(id);
 	}
 
 	/**
@@ -66,13 +80,22 @@ public class Game extends StateBasedGame {
 			app.setShowFPS(false);
 			app.setFullscreen(settings.isFullscreen());
 			app.setIcon("Pictures/ship.png");
+			initMusic(app);
 			app.start();
 		} catch(SlickException e){
 			e.printStackTrace();
 		}
 
 	}
-	
+
+	private static void initMusic(AppGameContainer app) {
+		// TODO Auto-generated method stub
+		app.setMusicOn(!settings.isMusic_mute());
+		app.setSoundOn(!settings.isSound_mute());
+		app.setMusicVolume((float)settings.getMusic_volume()/100.f);
+		app.setSoundVolume((float)settings.getSound_volume()/100.f);
+	}
+
 	private static void initDirectories() {
 		File dir = new File("Save/");
 		if (!dir.exists()) {

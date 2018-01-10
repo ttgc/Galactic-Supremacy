@@ -22,6 +22,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.FontUtils;
 
 public class GameOverScreen extends BasicGameState {
 	private int timemin;
@@ -43,8 +44,9 @@ public class GameOverScreen extends BasicGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		// TODO Auto-generated method stub
 		g.setBackground(new Color(0, 0, 0));
-		g.setColor(new Color(255, 255, 255));
-		g.drawString("GAME OVER", 360, 290);
+		//g.setColor(new Color(255, 255, 255));
+		FontUtils.drawCenter(Level.fonts[0], "GAME OVER", 0, 290, 800, new Color(255,255,255));
+		//g.drawString("GAME OVER", 360, 290);
 
 	}
 	
@@ -69,6 +71,7 @@ public class GameOverScreen extends BasicGameState {
 		// TODO Auto-generated method stub
 		timemin += delta;
 		if (reset) {
+			Game.player.resurect();
 			sbg.enterState(0);
 		}
 		

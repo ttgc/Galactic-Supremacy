@@ -1,3 +1,5 @@
+import basics.Hitbox;
+
 /*******************************************************************************
 	Galactic Supremacy, Shoot'em up game
 	Copyright (C) 2017, 2018  PIOT Thomas
@@ -35,6 +37,8 @@ public abstract class Powerup {
 	}
 	
 	public abstract void transfer(Player target);
+	
+	public abstract int getID();
 
 	public double getX() {
 		return x;

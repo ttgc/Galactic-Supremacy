@@ -30,4 +30,10 @@ public class PowerupRepair extends Powerup {
 
 	}
 
+	@Override
+	public int getID() {
+		// TODO Auto-generated method stub
+		return 8;
+	}
+
 }

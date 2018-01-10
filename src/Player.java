@@ -100,12 +100,14 @@ public class Player implements Serializable {
 	
 	public boolean lose_life() {
 		lives--;
-		game_over = (lives >= 0);
+		game_over = (lives < 0);
+		ship.setAlive(true);
+		ship.fullheal();
 		return game_over;
 	}
 	
-	public boolean use_power(Ennemy[] mobs) {
-		return power.use(this, mobs);
+	public boolean use_power(Level lvl) {
+		return power.use(this, lvl);
 	}
 	
 	public boolean add_cannon(Canon cn) {
@@ -126,6 +128,13 @@ public class Player implements Serializable {
 			}
 		}
 		return false;
+	}
+	
+	public void resurect() {
+		lives = 3;
+		game_over = false;
+		ship.setAlive(true);
+		ship.heal(ship.getHPmax());
 	}
 	
 	public void save() {
@@ -216,6 +225,7 @@ public class Player implements Serializable {
 			return;
 		}
 		this.lives = lives;
+		game_over = false;
 	}
 
 	public Ship getShip() {
