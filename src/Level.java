@@ -588,6 +588,7 @@ public abstract class Level extends BasicGameState {
 		player_res[6] = new Image("Pictures/shield.png");
 		ennemies_res = new Image[10];
 		ennemies_res[0] = new Image("Pictures/starcup.png");
+		ennemies_res[1] = new Image("Pictures/starball.png");
 		powerup_res = new Image[10];
 		Starcup.init();
 		/*******************************************

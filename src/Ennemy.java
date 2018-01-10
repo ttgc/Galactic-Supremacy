@@ -44,6 +44,9 @@ public abstract class Ennemy {
 			throw new SpawnException("ressource index doesnt exist");
 		}
 		id = res_i;
+		if (hp <= 0) {
+			throw new SpawnException("Cannot have negativ HP");
+		}
 		HP = hp;
 		alive = true;
 		hitbox = new Hitbox(hitbox_ref[res_i]);
