@@ -61,5 +61,9 @@ public class Points {
 		x = r*Math.cos(theta);
 		y = r*Math.sin(theta);
 	}
+	
+	public double getTrueY() {
+		return 600-y;
+	}
 
 }

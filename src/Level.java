@@ -36,6 +36,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
 import basics.Hitbox;
+import exceptions.SpawnException;
 
 
 public abstract class Level extends BasicGameState {
@@ -480,7 +481,7 @@ public abstract class Level extends BasicGameState {
 			
 			//verification collision
 			if (existing_shoot.get(i).isAlly())	{
-				for (int k=0;i<ennemies.size();i++) {
+				for (int k=0;k<ennemies.size();k++) {
 					/*if (existing_shoot.get(i).getX() > ennemies.get(k).getX()-(Ennemy.getHitbox_ref()[ennemies.get(k).getId()].getWidth()/2) && existing_shoot.get(i).getX() < ennemies.get(k).getX()+(Ennemy.getHitbox_ref()[ennemies.get(k).getId()].getWidth()/2)
 							&& existing_shoot.get(i).getY() > ennemies.get(k).getY()-(Ennemy.getHitbox_ref()[ennemies.get(k).getId()].getHeight()/2) && existing_shoot.get(i).getY() < ennemies.get(k).getY()+(Ennemy.getHitbox_ref()[ennemies.get(k).getId()].getHeight()/2)) {*/
 					if (ennemies.get(k).getHitbox().check_collision_point(existing_shoot.get(i).getX(),
@@ -536,8 +537,14 @@ public abstract class Level extends BasicGameState {
 	@Override
 	public abstract int getID();
 	
-	public void spawn(double x, double y, int dir, int id, int hp) throws Exception {
-		ennemies.add(new Ennemy(x, y, dir, id, hp));
+	public void spawn(int id, double x, double y, int dir, int hp) throws SpawnException {
+		switch (id) {
+		case 0:
+			ennemies.add(new Starcup(x, y, dir, hp));
+			break;
+		default:
+			throw new SpawnException("wrong id of ennemy");
+		}
 	}
 	
 	protected void initScrolling() {
@@ -580,8 +587,9 @@ public abstract class Level extends BasicGameState {
 		player_res[2] = new Image("Pictures/canon.png");
 		player_res[6] = new Image("Pictures/shield.png");
 		ennemies_res = new Image[10];
-		ennemies_res[0] = new Image("Pictures/ennemy1.png");
+		ennemies_res[0] = new Image("Pictures/starcup.png");
 		powerup_res = new Image[10];
+		Starcup.init();
 		/*******************************************
 		 * Tableau des ressources :
 		 * res 0 			= life indicator

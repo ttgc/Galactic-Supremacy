@@ -21,6 +21,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import exceptions.SpawnException;
+
 public class Level_1 extends Level {
 
 	public Level_1() {
@@ -69,6 +71,14 @@ public class Level_1 extends Level {
 		for (int i=496;i>400;i-=32) {
 			obstacle.add(new Wall(32, 32, i, -328+(i-496)));
 		}
+		
+		try {
+			spawn(0, 400, 300, 0, 100);
+		} catch (SpawnException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }

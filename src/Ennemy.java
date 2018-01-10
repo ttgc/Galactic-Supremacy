@@ -19,12 +19,11 @@
 import java.util.Random;
 
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-
 import basics.Hitbox;
 import basics.RoundHitbox;
+import exceptions.SpawnException;
 
-public class Ennemy extends Ennemi {
+public abstract class Ennemy {
 	protected static Hitbox[] hitbox_ref;
 	protected Hitbox hitbox;
 	protected RoundHitbox rhitbox;
@@ -34,15 +33,15 @@ public class Ennemy extends Ennemi {
 	private int id;
 	protected int HP;
 	public boolean alive;
-	private Image sprite;
+	protected int speed;
 
-	public Ennemy(double x, double y, int dir, int res_i, int hp) throws Exception {
+	public Ennemy(double x, double y, int dir, int res_i, int hp) throws SpawnException {
 		// TODO Auto-generated constructor stub
 		this.x = x;
 		this.y = y;
 		direction = dir;
 		if (id < 0 || id >= 10) {
-			throw new Exception("ressource index doesnt exist");
+			throw new SpawnException("ressource index doesnt exist");
 		}
 		id = res_i;
 		HP = hp;
@@ -50,7 +49,7 @@ public class Ennemy extends Ennemi {
 		hitbox = new Hitbox(hitbox_ref[res_i]);
 		rhitbox = new RoundHitbox(hitbox);
 		hitbox.update(x, y);
-		sprite = Level.ennemies_res[res_i];
+		speed = 1;
 	}
 	
 	public int bounce(double angle) {
@@ -59,8 +58,8 @@ public class Ennemy extends Ennemi {
 	}
 	
 	public void tick() {
-		x += Math.cos(Math.toRadians(direction));
-		y += -Math.sin(Math.toRadians(direction));
+		x += speed*Math.cos(Math.toRadians(direction));
+		y += -speed*Math.sin(Math.toRadians(direction));
 		hitbox.update(x,y);
 	}
 	
@@ -72,19 +71,10 @@ public class Ennemy extends Ennemi {
 		HP -= Math.abs(amount);
 		alive = (HP > 0);
 		return (HP > 0);
-	}
+}
 
-	@Override
-	public void render(Graphics g) {
-		// TODO Auto-generated method stub
-		sprite.drawCentered((float) x, (float) y);
-	}
-
-	@Override
-	public void update(int delta) {
-		// TODO Auto-generated method stub
-		
-	}
+	public abstract void render(Graphics g);
+	public abstract void update(int delta);
 	
 	@SuppressWarnings("unused")
 	public Powerup drop() {
@@ -136,15 +126,19 @@ public class Ennemy extends Ennemi {
 		return rhitbox;
 	}
 	
-	public Image getSprite() {
-		return sprite;
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 	
 	//STATIC
 	public static void initHitbox() {
 		hitbox_ref = new Hitbox[Level.getEnnemies_res().length];
 		for (int i=0;i<Level.getEnnemies_res().length;i++) {
-			hitbox_ref[i] = new Hitbox(32,32);
+			hitbox_ref[i] = new Hitbox(64,64);
 		}
 	}
 

@@ -71,7 +71,11 @@ public class Game extends StateBasedGame {
 		initDirectories();
 		initPlayer();
 		initSettings();
+		//Level.initFont();
+		//Level.initRessources();
 		ShopManager.initShops();
+		//Ennemy.initHitbox();
+		//Starcup.init();
 		
 		AppGameContainer app;
 		try {
