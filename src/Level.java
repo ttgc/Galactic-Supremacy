@@ -112,7 +112,8 @@ public abstract class Level extends BasicGameState {
 			powerup_res[powerup.get(i).getID()].drawCentered((float)powerup.get(i).getX(), (float)powerup.get(i).getY());
 		}
 		for (int i=0;i<ennemies.size();i++) {
-			ennemies_res[ennemies.get(i).getId()].drawCentered((float)ennemies.get(i).getX(), (float)ennemies.get(i).getY());
+			//ennemies_res[ennemies.get(i).getId()].drawCentered((float)ennemies.get(i).getX(), (float)ennemies.get(i).getY());
+			ennemies.get(i).render(g);
 		}
 		if (rck != null) {
 			player_res[1].drawCentered((float)rck.getX(), (float)rck.getY());
@@ -179,12 +180,12 @@ public abstract class Level extends BasicGameState {
 		if (input.isKeyDown(Input.KEY_RIGHT) && player.getShip().getX() < 768 && wallcheck(0)) {
 			player.getShip().setX(player.getShip().getX()+1);
 		}
-		if (input.isKeyDown(Input.KEY_DOWN) && player.getShip().getY() < 568 && wallcheck(3)) {
+		/*if (input.isKeyDown(Input.KEY_DOWN) && player.getShip().getY() < 568 && wallcheck(3)) {
 			player.getShip().setY(player.getShip().getY()+1);
 		}
 		if (input.isKeyDown(Input.KEY_UP) && player.getShip().getY() > 32 && wallcheck(1)) {
 			player.getShip().setY(player.getShip().getY()-1);
-		}
+		}*/
 		if (input.isKeyDown(Input.KEY_SPACE) && canshoot) {
 			canshoot = false;
 			Shoot[] tirs = player.getShip().getCanon().shoot(player.getShip().getX(),player.getShip().getY());
@@ -228,6 +229,7 @@ public abstract class Level extends BasicGameState {
 		if (paused) {
 			return;
 		}
+		
 		ticker += delta;
 		if (ticker >= 33) {
 			int frames;
@@ -279,6 +281,15 @@ public abstract class Level extends BasicGameState {
 				outofbound(sbg);
 			}
 		}
+		
+		verification(delta);
+		
+		for (int i=0;i<ennemies.size();i++) {
+			ennemies.get(i).update(delta);
+		}
+	}
+
+	private void verification(int delta) {
 		if (!canshoot) {
 			cdcalculator += delta;
 			if (player.getShip().getCanon().getCooldown()*1000 >= cdcalculator) {

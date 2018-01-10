@@ -18,10 +18,13 @@
 
 import java.util.Random;
 
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+
 import basics.Hitbox;
 import basics.RoundHitbox;
 
-public class Ennemy {
+public class Ennemy extends Ennemi {
 	protected static Hitbox[] hitbox_ref;
 	protected Hitbox hitbox;
 	protected RoundHitbox rhitbox;
@@ -31,6 +34,7 @@ public class Ennemy {
 	private int id;
 	protected int HP;
 	public boolean alive;
+	private Image sprite;
 
 	public Ennemy(double x, double y, int dir, int res_i, int hp) throws Exception {
 		// TODO Auto-generated constructor stub
@@ -46,6 +50,7 @@ public class Ennemy {
 		hitbox = new Hitbox(hitbox_ref[res_i]);
 		rhitbox = new RoundHitbox(hitbox);
 		hitbox.update(x, y);
+		sprite = Level.ennemies_res[res_i];
 	}
 	
 	public int bounce(double angle) {
@@ -67,6 +72,18 @@ public class Ennemy {
 		HP -= Math.abs(amount);
 		alive = (HP > 0);
 		return (HP > 0);
+	}
+
+	@Override
+	public void render(Graphics g) {
+		// TODO Auto-generated method stub
+		sprite.drawCentered((float) x, (float) y);
+	}
+
+	@Override
+	public void update(int delta) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	@SuppressWarnings("unused")
@@ -115,6 +132,14 @@ public class Ennemy {
 		return hitbox;
 	}
 	
+	public RoundHitbox getRhitbox() {
+		return rhitbox;
+	}
+	
+	public Image getSprite() {
+		return sprite;
+	}
+	
 	//STATIC
 	public static void initHitbox() {
 		hitbox_ref = new Hitbox[Level.getEnnemies_res().length];
@@ -125,10 +150,6 @@ public class Ennemy {
 
 	public static Hitbox[] getHitbox_ref() {
 		return hitbox_ref;
-	}
-
-	public RoundHitbox getRhitbox() {
-		return rhitbox;
 	}
 
 }
