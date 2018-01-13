@@ -1,3 +1,7 @@
+package gameplay.powerup;
+import basics.Hitbox;
+import gameplay.player.Player;
+
 /*******************************************************************************
 	Galactic Supremacy, Shoot'em up game
 	Copyright (C) 2017, 2018  PIOT Thomas
@@ -16,54 +20,38 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package basics;
+public abstract class Powerup {
+	private double x;
+	private double y;
+	private Hitbox hitbox;
 
-public class Points {
-	public double x;
-	public double y;
-
-	public Points() {
+	public Powerup(double x, double y) {
 		// TODO Auto-generated constructor stub
-		x = 0;
-		y = 0;
-	}
-	
-	public Points(double x, double y) {
 		this.x = x;
 		this.y = y;
+		hitbox = new Hitbox(32, 32);
+		hitbox.update(x, y);
 	}
 	
-	public Points(Points other) {
-		x = other.x;
-		y = other.y;
+	public void tick() {
+		y += 2;
+		hitbox.update(x, y);
 	}
 	
-	public double distance(Points other) {
-		return Math.abs(Math.sqrt((x*x)+(y*y))-Math.sqrt((other.x*other.x)+(other.y*other.y)));
-	}
+	public abstract void transfer(Player target);
 	
-	public double module() {
-		return Math.sqrt((x*x)+(y*y));
+	public abstract int getID();
+
+	public double getX() {
+		return x;
 	}
-	
-	public double arg() {
-		if (x == 0 && y == 0) {
-			return -1;
-		}
-		double result = Math.acos(x/module());
-		if (y < 0) {
-			result = -result;
-		}
-		return Math.toDegrees(result);
+
+	public double getY() {
+		return y;
 	}
-	
-	public void setPolarCoords(double r, double theta) {
-		x = r*Math.cos(theta);
-		y = r*Math.sin(theta);
-	}
-	
-	public double getTrueY() {
-		return 600-y;
+
+	public Hitbox getHitbox() {
+		return hitbox;
 	}
 
 }

@@ -1,3 +1,4 @@
+package gameplay.ennemies;
 /*******************************************************************************
 	Galactic Supremacy, Shoot'em up game
 	Copyright (C) 2017, 2018  PIOT Thomas
@@ -16,54 +17,41 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package basics;
+import basics.Path;
+import basics.Points;
+import exceptions.SpawnException;
+import states.levels.Level;
 
-public class Points {
-	public double x;
-	public double y;
+public abstract class PathedEnnemy extends Ennemy {
+	protected Path path;
+	private boolean path_defined;
 
-	public Points() {
+	public PathedEnnemy(double x, double y, int dir, int res_i, int hp, Level lvl) throws SpawnException {
+		super(x, y, dir, res_i, hp, lvl);
 		// TODO Auto-generated constructor stub
-		x = 0;
-		y = 0;
+		path = new Path(new Points(x, 600-y), new Points(x,600-y), speed, true, false);
+		path_defined = false;
 	}
 	
-	public Points(double x, double y) {
-		this.x = x;
-		this.y = y;
+	@Override
+	public void tick() {
+		// TODO Auto-generated method stub
+		path.step();
+		x = path.getCurrent().x;
+		y = path.getCurrent().getTrueY();
+		direction = path.getDirection();
+		hitbox.update(x, y);
 	}
 	
-	public Points(Points other) {
-		x = other.x;
-		y = other.y;
-	}
-	
-	public double distance(Points other) {
-		return Math.abs(Math.sqrt((x*x)+(y*y))-Math.sqrt((other.x*other.x)+(other.y*other.y)));
-	}
-	
-	public double module() {
-		return Math.sqrt((x*x)+(y*y));
-	}
-	
-	public double arg() {
-		if (x == 0 && y == 0) {
-			return -1;
+	protected void definePath(Path path) {
+		if (!path_defined) {
+			this.path = path;
+			path_defined = true;
 		}
-		double result = Math.acos(x/module());
-		if (y < 0) {
-			result = -result;
-		}
-		return Math.toDegrees(result);
 	}
-	
-	public void setPolarCoords(double r, double theta) {
-		x = r*Math.cos(theta);
-		y = r*Math.sin(theta);
-	}
-	
-	public double getTrueY() {
-		return 600-y;
+
+	public Path getPath() {
+		return path;
 	}
 
 }

@@ -1,3 +1,6 @@
+package gameplay.powerup;
+import gameplay.player.Player;
+
 /*******************************************************************************
 	Galactic Supremacy, Shoot'em up game
 	Copyright (C) 2017, 2018  PIOT Thomas
@@ -16,54 +19,34 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package basics;
+public class PowerupEnergy extends Powerup {
+	private boolean down;
 
-public class Points {
-	public double x;
-	public double y;
-
-	public Points() {
+	public PowerupEnergy(double x, double y, boolean malus) {
+		super(x, y);
 		// TODO Auto-generated constructor stub
-		x = 0;
-		y = 0;
+		down = malus;
 	}
-	
-	public Points(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
-	
-	public Points(Points other) {
-		x = other.x;
-		y = other.y;
-	}
-	
-	public double distance(Points other) {
-		return Math.abs(Math.sqrt((x*x)+(y*y))-Math.sqrt((other.x*other.x)+(other.y*other.y)));
-	}
-	
-	public double module() {
-		return Math.sqrt((x*x)+(y*y));
-	}
-	
-	public double arg() {
-		if (x == 0 && y == 0) {
-			return -1;
+
+	@Override
+	public void transfer(Player target) {
+		// TODO Auto-generated method stub
+		if (down) {
+			target.getShip().recharge(25);
+		} else {
+			boolean test;
+			test = target.getShip().consume(25);
+			if (!test) {
+				target.getShip().consume(target.getShip().getEnergy());
+			}
 		}
-		double result = Math.acos(x/module());
-		if (y < 0) {
-			result = -result;
-		}
-		return Math.toDegrees(result);
+
 	}
-	
-	public void setPolarCoords(double r, double theta) {
-		x = r*Math.cos(theta);
-		y = r*Math.sin(theta);
-	}
-	
-	public double getTrueY() {
-		return 600-y;
+
+	@Override
+	public int getID() {
+		// TODO Auto-generated method stub
+		return 2;
 	}
 
 }

@@ -1,3 +1,6 @@
+package gameplay.player.canon;
+import gameplay.Shoot;
+
 /*******************************************************************************
 	Galactic Supremacy, Shoot'em up game
 	Copyright (C) 2017, 2018  PIOT Thomas
@@ -16,54 +19,27 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package basics;
+public class DoubleCanon extends Canon {
+	private static final long serialVersionUID = 6689655347857095546L;
 
-public class Points {
-	public double x;
-	public double y;
-
-	public Points() {
+	public DoubleCanon(int dur, float cd) {
+		super(dur, cd);
 		// TODO Auto-generated constructor stub
-		x = 0;
-		y = 0;
 	}
-	
-	public Points(double x, double y) {
-		this.x = x;
-		this.y = y;
+
+	@Override
+	public Shoot[] shoot(double x, double y) {
+		// TODO Auto-generated method stub
+		tick();
+		tick();
+		Shoot[] result = {new Shoot(x-4, y, 90, true), new Shoot(x+4, y, 90, true)};
+		return result;
 	}
-	
-	public Points(Points other) {
-		x = other.x;
-		y = other.y;
-	}
-	
-	public double distance(Points other) {
-		return Math.abs(Math.sqrt((x*x)+(y*y))-Math.sqrt((other.x*other.x)+(other.y*other.y)));
-	}
-	
-	public double module() {
-		return Math.sqrt((x*x)+(y*y));
-	}
-	
-	public double arg() {
-		if (x == 0 && y == 0) {
-			return -1;
-		}
-		double result = Math.acos(x/module());
-		if (y < 0) {
-			result = -result;
-		}
-		return Math.toDegrees(result);
-	}
-	
-	public void setPolarCoords(double r, double theta) {
-		x = r*Math.cos(theta);
-		y = r*Math.sin(theta);
-	}
-	
-	public double getTrueY() {
-		return 600-y;
+
+	@Override
+	public int getID() {
+		// TODO Auto-generated method stub
+		return 1;
 	}
 
 }
