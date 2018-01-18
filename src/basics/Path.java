@@ -23,7 +23,7 @@ import java.util.Vector;
 public class Path {
 	private boolean repeat;
 	private boolean reverse;
-	private boolean relative;
+	//private boolean relative;
 	private float speed;
 	private Vector<Points> points;
 	private Points current;
@@ -34,7 +34,7 @@ public class Path {
 		// TODO Auto-generated constructor stub
 		repeat = true;
 		reverse = false;
-		relative = true;
+		//relative = true;
 		this.speed = speed;
 		points = new Vector<Points>();
 		points.add(from);
@@ -44,11 +44,11 @@ public class Path {
 		curstep = 1;
 	}
 	
-	public Path(Points from, Points to, float speed, boolean repeat, boolean reverse, boolean relative) {
+	public Path(Points from, Points to, float speed, boolean repeat, boolean reverse) {
 		// TODO Auto-generated constructor stub
 		this.repeat = repeat;
 		this.reverse = reverse;
-		this.relative = relative;
+		//this.relative = relative;
 		this.speed = speed;
 		points = new Vector<Points>();
 		points.add(from);
@@ -133,8 +133,12 @@ public class Path {
 		return direction;
 	}
 
-	public boolean isRelative() {
-		return relative;
+	public int getCurstep() {
+		return curstep;
 	}
+
+	/*public boolean isRelative() {
+		return relative;
+	}*/
 
 }
