@@ -54,16 +54,12 @@ public class Points {
 		if (y < 0) {
 			result = -result;
 		}
-		return Math.toDegrees(result);
+		return result;
 	}
 	
 	public void setPolarCoords(double r, double theta) {
 		x = r*Math.cos(theta);
 		y = r*Math.sin(theta);
-	}
-	
-	public double getTrueY() {
-		return 600-y;
 	}
 
 }
