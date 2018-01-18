@@ -27,7 +27,7 @@ The following list refers to possible upgrade for lite edition
 * Bonus weapons ✔️
 * Score ❌
 * Save system ✔️
-* Difficulties level ❌
+* Difficulties level ✔️
 
 -----------
 
