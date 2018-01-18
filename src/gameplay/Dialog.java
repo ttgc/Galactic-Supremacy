@@ -50,6 +50,10 @@ public class Dialog {
 		started = false;
 	}
 	
+	public void reset() {
+		position = 0;
+	}
+	
 	public void restart() {
 		position = 0;
 		start();

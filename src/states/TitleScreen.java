@@ -47,11 +47,13 @@ public class TitleScreen extends BasicGameState {
 		Level.initRessources();
 		Level.initFont();
 		Ennemy.initHitbox();
+		if (Game.music == null) {
+			Game.initMusic();
+		}
 		back = new Image("Pictures/background.png");
 		button = new Image("Pictures/button.png");
-		gc.setMusicOn(true);
-		gc.setSoundOn(true);
 		game = sbg;
+		Game.music[0].play();
 		
 		//testing
 		//Game.player.earnmoney(9999999);
@@ -123,6 +125,7 @@ public class TitleScreen extends BasicGameState {
 				case 3:
 					//quitter
 					Game.player.save();
+					Game.music[0].stop();
 					System.exit(0);
 					break;
 				}
@@ -133,7 +136,9 @@ public class TitleScreen extends BasicGameState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		// TODO Auto-generated method stub
-
+		if (!Game.music[0].playing()) {
+			Game.music[0].play();
+		}
 	}
 
 	@Override

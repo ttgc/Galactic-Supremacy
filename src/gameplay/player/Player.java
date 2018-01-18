@@ -184,17 +184,21 @@ public class Player implements Serializable {
 				this.power = pl.power;
 				this.level = pl.level;
 			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 				problem = true;
 			}
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 			problem = true;
 		} catch (IOException e) {
+			e.printStackTrace();
 			problem = true;
 		} finally {
 			if (file != null) {
 				try {
 					file.close();
 				} catch (IOException e) {
+					e.printStackTrace();
 					problem = true;
 				}
 			}

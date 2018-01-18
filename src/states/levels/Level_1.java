@@ -64,6 +64,15 @@ public class Level_1 extends Level {
 	}
 	
 	@Override
+	public void keyPressed(int key, char c) {
+		// TODO Auto-generated method stub
+		if (!initialdialog) {
+			return;
+		}
+		super.keyPressed(key, c);
+	}
+	
+	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		// TODO Auto-generated method stub
 		if (!initialdialog) {
@@ -113,7 +122,7 @@ public class Level_1 extends Level {
 		// TODO Auto-generated method stub
 		if (isSpawnable()) {
 			Random rdm = new Random();
-			Hitbox calc = new Hitbox(64,64);
+			Hitbox calc = new Hitbox(96,96);
 			int x,y;
 			boolean col = false;
 			do {

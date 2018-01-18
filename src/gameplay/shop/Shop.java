@@ -32,6 +32,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
+import exceptions.ShopException;
+
 import basics.Hitbox;
 import gameplay.player.Shield;
 import gameplay.player.canon.BasicCanon;
@@ -59,10 +61,13 @@ public class Shop extends BasicGameState {
 		ShopManager.import_data();
 		int[] avalaible = null;
 		if (Game.player.getLevel() < 10) {
-			avalaible = new int[3];
+			avalaible = new int[6];
 			avalaible[0] = 0;
 			avalaible[1] = 3;
 			avalaible[2] = 4;
+			avalaible[3] = 5;
+			avalaible[4] = 6;
+			avalaible[5] = 7;
 		} else if (Game.player.getLevel() < 20) {
 			
 		} else if (Game.player.getLevel() < 30) {
@@ -73,9 +78,10 @@ public class Shop extends BasicGameState {
 		manager = new ShopManager(avalaible);
 		button = new Image("Pictures/button.png");
 		back = new Image("Pictures/background.png");
-		sprites = new Image[5];
+		sprites = new Image[10];
 		initSprites();
 		game = sbg;
+		Game.music[2].play();
 
 	}
 
@@ -94,12 +100,13 @@ public class Shop extends BasicGameState {
 		button.drawCentered(400, 524);
 		FontUtils.drawCenter(Level.getFonts()[1], "Retour", 0, 518, 800, new Color(0,0,0));
 		if (manager.isBought() && manager.isOnlyonetime()) {
+			float lw = g.getLineWidth();
 			g.setLineWidth(4);
 			g.setColor(new Color(255,0,0));
 			g.drawLine(50, 100, 750, 500);
 			g.drawLine(750, 100, 50, 500);
 			g.setColor(new Color(255,255,255));
-			g.resetLineWidth();
+			g.setLineWidth(lw);
 		}
 
 	}
@@ -121,6 +128,7 @@ public class Shop extends BasicGameState {
 				} else if (alea > 0.85f) {
 					alea -= 0.2f;
 				}
+				alea = ((float) Math.round(alea*100)/100.f);
 				Random rdm = new Random();
 				boolean refund = false;
 				switch (manager.getID()) {
@@ -147,6 +155,43 @@ public class Shop extends BasicGameState {
 				case 4:
 					Canon cnb = new BasicCanon(250+rdm.nextInt(500), alea);
 					refund = !Game.player.add_cannon(cnb);
+					break;
+				case 5:
+					Game.player.getShip().upgrade_rocket();
+					refund = false;
+					break;
+				case 6:
+					Game.player.setRocket_stock(Game.player.getRocket_stock()+2);
+					refund = false;
+					break;
+				case 7:
+					Game.player.getShip().setHPmax(Game.player.getShip().getHPmax()+50);
+					Game.player.getShip().fullheal();
+					refund = false;
+					break;
+				case 8:
+					try {
+						Shield sdp = new Shield(250, 1+rdm.nextInt(10), true, false, 0, 2.5f);
+						refund = !Game.player.add_shield(sdp);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				case 9:
+					try {
+						Shield sdp = new Shield(1000, 0, false, true, 20, 0);
+						refund = !Game.player.add_shield(sdp);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				default:
+					try {
+						throw new ShopException("Not found item");
+					} catch (ShopException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					break;
 				}
 				if (refund) {
@@ -200,6 +245,7 @@ public class Shop extends BasicGameState {
 		click_zone.update(400, 524);
 		if (click_zone.check_collision_point(x, y)) {
 			ShopManager.export_data();
+			Game.player.save();
 			game.enterState(0);
 		}
 	}
@@ -221,6 +267,9 @@ public class Shop extends BasicGameState {
 		sprites[0] = new Image("Pictures/canon_shop.png");
 		sprites[3] = new Image("Pictures/shield_shop.png");
 		sprites[4] = new Image("Pictures/canon_shop.png");
+		sprites[5] = new Image("Pictures/rocket-upgrade_shop.png");
+		sprites[6] = new Image("Pictures/rocket_shop.png");
+		sprites[7] = new Image("Pictures/life_shop.png");
 		
 	}
 

@@ -29,6 +29,10 @@ public class PowerupLife extends Powerup {
 	@Override
 	public void transfer(Player target) {
 		// TODO Auto-generated method stub
+		if (target.getLives() == 5) {
+			target.getShip().heal(35);
+			return;
+		}
 		target.setLives(target.getLives()+1);
 
 	}

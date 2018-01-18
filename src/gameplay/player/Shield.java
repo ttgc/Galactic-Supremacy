@@ -55,20 +55,20 @@ public class Shield implements Serializable {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		String str = "HP : "+HP+"\nHP max : "+HPmax+"\nEnergy : "+energytick+" per ticks";
+		String str = "HP : "+HP+"\nHP max : "+HPmax+"\nEnergy : "+energytick+" ticks";
 		String mtime = String.valueOf(active_max_time);
 		if (active_max_time == 0) {
 			mtime = "Unlimited";
 		}
-		str += ("\nActivation time max : "+mtime+"s");
+		str += ("\ntime max : "+mtime+"s");
 		String reg = "No regen";
 		if (regenerate) {
 			reg = "x"+regen;
 		}
-		str += ("\nRegeneration : "+reg);
-		String ref = "\nNot reflectiv";
+		str += ("\nRegen : "+reg);
+		String ref = "\nNot reflective";
 		if (reflectiv) {
-			ref = "\nReflectiv";
+			ref = "\nReflective";
 		}
 		str += ref;
 		return str;

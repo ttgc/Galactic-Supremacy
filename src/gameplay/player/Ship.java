@@ -103,12 +103,17 @@ public class Ship implements Serializable {
 				amount = Math.abs(shield.getHP());
 				shield.disable();
 				if (!shield.isRegenerate()) {
-					shield = null;
 					consume(shield.getEnergytick());
+					shield = null;
 				} else {
 					shielded = true;
 				}
+			} else {
+				shielded = true;
 			}
+		}
+		if (shielded) {
+			return true;
 		}
 		HP -= Math.abs(amount);
 		if (!shielded) {
@@ -139,17 +144,17 @@ public class Ship implements Serializable {
 		if (!alive) {
 			return;
 		}
-		if (shield != null && shield.isActiv()) {
-			boolean test = consume(shield.getEnergytick());
-			if (!test){
-				shield.disable();
-			}
-		}
 		if (canon.getDurability() <= 0) {
 			canon = null;
 			return;
 		}
 		counttick++;
+		if (counttick%30 == 0 && shield != null && shield.isActiv()) {
+			boolean test = consume(shield.getEnergytick());
+			if (!test){
+				shield.disable();
+			}
+		}
 		if (counttick%5 == 0 && canon.isOverheat()) {
 			canon.setHeat(canon.getHeat()-1);
 		}

@@ -127,6 +127,10 @@ public abstract class Ennemy {
 		}
 		return item;
 	}
+	
+	public boolean isBoss() {
+		return false;
+	}
 
 	public int getId() {
 		return id;

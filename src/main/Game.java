@@ -39,11 +39,13 @@ import states.LoadingScreen;
 import states.TitleScreen;
 import states.Worldmap;
 import states.levels.Level_1;
+import states.levels.Level_2;
+import states.levels.Level_3;
 
 public class Game extends StateBasedGame {
 	public static Player player;
 	public static Settings settings;
-	public static Music music;
+	public static Music[] music;
 
 	public Game(String name) {
 		super(name);
@@ -61,6 +63,8 @@ public class Game extends StateBasedGame {
 		addState(new Worldmap());
 		addState(new Garage());
 		addState(new Level_1());
+		addState(new Level_2());
+		addState(new Level_3());
 
 	}
 	
@@ -90,7 +94,7 @@ public class Game extends StateBasedGame {
 		ShopManager.initShops();
 		//Ennemy.initHitbox();
 		//Starcup.init();
-		
+						
 		AppGameContainer app;
 		try {
 			app = new AppGameContainer(new Game("Galactic Supremacy"));
@@ -98,7 +102,7 @@ public class Game extends StateBasedGame {
 			app.setShowFPS(false);
 			app.setFullscreen(settings.isFullscreen());
 			app.setIcon("Pictures/ship.png");
-			initMusic(app);
+			initMusicSystem(app);
 			app.start();
 		} catch(SlickException e){
 			e.printStackTrace();
@@ -106,7 +110,7 @@ public class Game extends StateBasedGame {
 
 	}
 
-	private static void initMusic(AppGameContainer app) {
+	private static void initMusicSystem(AppGameContainer app) {
 		// TODO Auto-generated method stub
 		app.setMusicOn(!settings.isMusic_mute());
 		app.setSoundOn(!settings.isSound_mute());
@@ -154,6 +158,13 @@ public class Game extends StateBasedGame {
 			settings = new Settings();
 			settings.save();
 		}
+	}
+	
+	public static void initMusic() throws SlickException {
+		music = new Music[3];
+		music[0] = new Music("Music/titlescreen.ogg");
+		music[1] = new Music("Music/battle.ogg");
+		music[2] = new Music("Music/shop.ogg");
 	}
 
 }

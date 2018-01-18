@@ -44,6 +44,7 @@ import gameplay.Wall;
 import gameplay.ennemies.Ennemy;
 import gameplay.ennemies.Starball;
 import gameplay.ennemies.Starcup;
+import gameplay.ennemies.Starroll;
 import gameplay.player.Player;
 import gameplay.player.Rocket;
 import gameplay.player.Ship;
@@ -116,6 +117,7 @@ public abstract class Level extends BasicGameState {
 		player.getShip().getCanon().reload();
 		initObstacle();
 		initScrolling();
+		Game.music[1].play();
 		
 	}
 
@@ -245,6 +247,7 @@ public abstract class Level extends BasicGameState {
 			int result;
 			result = JOptionPane.showConfirmDialog(frame, "Retourner au menu principal ?\nVotre progression actuelle sera perdue", "Retourner au menu ?", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
+				player.getShip().fullheal();
 				sbg.enterState(0);
 			}
 			if (Game.settings.isFullscreen()) {
@@ -288,7 +291,7 @@ public abstract class Level extends BasicGameState {
 			for (int i=0;i<frames;i++) {
 				player.getShip().tick();
 				laser_col();
-				ennemy_col(delta);
+				ennemy_col();
 				powerup_col();
 				if (!player.getShip().isAlive()) {
 					player.lose_life();
@@ -338,12 +341,12 @@ public abstract class Level extends BasicGameState {
 			}
 		}
 		
+		for (int i=0;i<ennemies.size();i++) {
+			ennemies.get(i).update(delta);
+		}
+		
 		verification(delta);
 		launch_endlevel();
-		
-		/*for (int i=0;i<ennemies.size();i++) {
-			ennemies.get(i).update(delta);
-		}*/
 	}
 
 	private void verification(int delta) {
@@ -432,6 +435,10 @@ public abstract class Level extends BasicGameState {
 				sbg.enterState(sbg.getCurrentStateID());
 			}
 		}
+		
+		if (rck != null && (!screen.check_collision(rck.getHitbox()))) {
+			rck = null;
+		}
 	}
 
 	private void wallcheckplus() {
@@ -494,10 +501,9 @@ public abstract class Level extends BasicGameState {
 		}
 	}
 	
-	private void ennemy_col(int delta) {
+	private void ennemy_col() {
 		for (int i=0;i<ennemies.size();i++) {
 			ennemies.get(i).tick();
-			ennemies.get(i).update(delta);
 			
 			//verification collision
 			for (int k=0;k<ennemies.size();k++) {
@@ -525,10 +531,17 @@ public abstract class Level extends BasicGameState {
 					ennemies.remove(i);
 					continue;
 				}
+				if (ennemies.get(i).isBoss()) {
+					rck = null;
+				}
 			}
 			
 			if (ennemies.get(i).getHitbox().check_collision(player.getShip().getHitbox())) {
 				player.getShip().damage(ennemies.get(i).getColDmg());
+				if (ennemies.get(i).isBoss()) {
+					ennemies.get(i).bounce(ennemies.get(i).getRhitbox().angle_tan(ennemies.get(i).getDirection()));
+					continue;
+				}
 				ennemies.remove(i);
 				continue;
 			}
@@ -612,6 +625,9 @@ public abstract class Level extends BasicGameState {
 		case 1:
 			ennemies.add(new Starball(x, y, dir, hp, this));
 			break;
+		case 3:
+			ennemies.add(new Starroll(x, y, hp, this));
+			break;
 		default:
 			throw new SpawnException("wrong id of ennemy");
 		}
@@ -633,7 +649,7 @@ public abstract class Level extends BasicGameState {
 			player.setLevel(player.getLevel()+1);
 		}
 		sbgsave.enterState(5);
-		player.earnmoney(100);
+		player.earnmoney(100*(getID()-9));
 		player.getShip().fullheal();
 		player.save();
 	}
@@ -676,6 +692,7 @@ public abstract class Level extends BasicGameState {
 		ressources[0] = new Image("Pictures/life.png");
 		ressources[1] = new Image("Pictures/laser.png");
 		ressources[2] = new Image("Pictures/wall.png");
+		ressources[3] = new Image("Pictures/raypower.png");
 		player_res = new Image[7];
 		player_res[0] = new Image("Pictures/ship.png");
 		player_res[1] = new Image("Pictures/rocket.png");
@@ -685,23 +702,25 @@ public abstract class Level extends BasicGameState {
 		ennemies_res[0] = new Image("Pictures/starcup.png");
 		ennemies_res[1] = new Image("Pictures/starball.png");
 		ennemies_res[2] = new Image("Pictures/starcupBoss.png");
+		ennemies_res[3] = new Image("Pictures/starroll.png");
 		powerup_res = new Image[10];
-		//temporary code below
-		powerup_res[0] = ressources[0];
-		powerup_res[1] = ressources[0];
+		powerup_res[0] = new Image("Pictures/burn.png");
+		powerup_res[1] = new Image("Pictures/cd-up.png");
 		powerup_res[2] = ressources[0];
 		powerup_res[3] = ressources[0];
 		powerup_res[4] = ressources[0];
 		powerup_res[5] = ressources[0];
-		powerup_res[6] = ressources[0];
+		powerup_res[6] = new Image("Pictures/money.png");
 		powerup_res[7] = ressources[0];
 		powerup_res[8] = ressources[0];
+		powerup_res[9] = new Image("Pictures/cd-down.png");
 		Starcup.init();
 		/*******************************************
 		 * Tableau des ressources :
 		 * res 0 			= life indicator
 		 * res 1 			= laser
 		 * res 2 			= wall
+		 * res 3			= ray power
 		 * player res 0 	= ship
 		 * player res 1 	= rocket
 		 * player res 2 	= basic canon
@@ -709,6 +728,7 @@ public abstract class Level extends BasicGameState {
 		 * ennemies res 0 	= UFO ennemy (starcup)
 		 * ennemies res 1 	= Starball
 		 * ennemies res 2	= Starcup boss
+		 * ennemies res 3	= Starroll
 		 *******************************************/
 	}
 	

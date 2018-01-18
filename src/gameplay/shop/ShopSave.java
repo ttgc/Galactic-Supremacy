@@ -32,7 +32,7 @@ import main.Game;
 
 public class ShopSave implements Serializable {
 	private static final long serialVersionUID = 8841831792493043301L;
-	private static String name;
+	private static String name = Game.player.getName();;
 	private boolean[] bougth;
 	private boolean[] onlyonetime;
 
@@ -40,7 +40,6 @@ public class ShopSave implements Serializable {
 		// TODO Auto-generated constructor stub
 		bougth = ShopManager.getBought();
 		onlyonetime = ShopManager.getOnlyonetime();
-		name = Game.player.getName();
 	}
 	
 	public void save() {
@@ -75,17 +74,21 @@ public class ShopSave implements Serializable {
 				sav = (ShopSave)file.readObject();
 			} catch (ClassNotFoundException e) {
 				problem = true;
+				e.printStackTrace();
 			}
 		} catch (FileNotFoundException e) {
 			problem = true;
+			e.printStackTrace();
 		} catch (IOException e) {
 			problem = true;
+			e.printStackTrace();
 		} finally {
 			if (file != null) {
 				try {
 					file.close();
 				} catch (IOException e) {
 					problem = true;
+					e.printStackTrace();
 				}
 			}
 		}

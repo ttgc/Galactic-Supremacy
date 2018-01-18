@@ -17,13 +17,17 @@ package gameplay.ennemies;
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+import java.util.Random;
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import basics.Points;
 import exceptions.SpawnException;
 import gameplay.player.Player;
+import main.Game;
 import states.levels.Level;
 
 public class StarcupBoss extends Ennemy implements Boss {
@@ -39,13 +43,12 @@ public class StarcupBoss extends Ennemy implements Boss {
 	private int phase;
 	private int animcalc;
 	private boolean anim;
+	private int shootcalc;
+	private int shootcalc2;
 
 	public StarcupBoss(double x, double y, Level lvl) throws SpawnException {
-		super(x, y, 0, 2, 100, lvl);
+		super(x, y, 0, 2, 1000, lvl);
 		// TODO Auto-generated constructor stub
-		dmged = new Animation();
-		dmged.setLooping(false);
-		//code to insert anim of damage here
 		sprite = Level.getEnnemies_res()[getId()];
 		try {
 			sprite_anim = new Image("Pictures/starcupBoss_anim.png");
@@ -53,6 +56,28 @@ public class StarcupBoss extends Ennemy implements Boss {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		dmged = new Animation();
+		dmged.setLooping(false);
+		dmged.setAutoUpdate(true);
+		dmged.addFrame(sprite, 33);
+		Image cpy = sprite.copy();
+		int prg = 255/14;
+		for (int i=0;i<14;i++) {
+			cpy.setImageColor(prg, 0, 0);
+			dmged.addFrame(cpy, 33);
+			prg += 255/14;
+			cpy = cpy.copy();
+		}
+		cpy.setImageColor(255, 0, 0);
+		dmged.addFrame(cpy, 33);
+		cpy = cpy.copy();
+		for (int i=0;i<14;i++) {
+			cpy.setImageColor(prg, 0, 0);
+			dmged.addFrame(cpy, 33);
+			prg -= 255/14;
+			cpy = cpy.copy();
+		}
+		dmged.addFrame(sprite, 33);
 		initialized = false;
 		indmg = false;
 		indestr = false;
@@ -60,12 +85,15 @@ public class StarcupBoss extends Ennemy implements Boss {
 		phase = 0;
 		animcalc = 0;
 		anim = false;
+		shootcalc = 0;
 	}
 
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
-		//dialogue
+		Random rdm = new Random();
+		direction = 200+rdm.nextInt(140);
+		speed = 2;
 		initialized = true;
 	}
 
@@ -84,28 +112,20 @@ public class StarcupBoss extends Ennemy implements Boss {
 		dmged.restart();
 		Animation anim;
 		switch(HP) {
-		case 50:
+		case 500:
 			anim = new Animation();
 			anim.setLooping(false);
 			//code of anim trans phase 1 -> 2
-			try {
-				transition(anim, new Image(""/*path of spr phase 2*/));
-			} catch (SlickException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			transition(dmged, sprite);
 			break;
-		case 25:
+		case 250:
 			anim = new Animation();
 			anim.setLooping(false);
 			//code of anim trans phase 2 -> 3
-			try {
-				transition(anim, new Image(""/*path of spr phase 3*/));
-			} catch (SlickException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			transition(dmged, sprite);
 			break;
+		case 0:
+			phase++;
 		}
 	}
 
@@ -116,13 +136,18 @@ public class StarcupBoss extends Ennemy implements Boss {
 		intrans = true;
 		trans.restart();
 		phase++;
+		speed *= 2;
 	}
 
 	@Override
 	public void loot(Player pl) {
 		// TODO Auto-generated method stub
 		pl.earnmoney(500);
-		pl.setLives(pl.getLives()+1);
+		if (pl.getLives() < 5) {
+			pl.setLives(pl.getLives()+1);
+		} else {
+			pl.earnmoney(250);
+		}
 	}
 
 	@Override
@@ -130,17 +155,11 @@ public class StarcupBoss extends Ennemy implements Boss {
 		// TODO Auto-generated method stub
 		if (indmg) {
 			g.drawAnimation(dmged, (float) x-64, (float) y-64);
-			return;
-		}
-		if (intrans) {
+		} else if (intrans) {
 			g.drawAnimation(trans, (float) x-64, (float) y-64);
-			return;
-		}
-		if (indestr) {
+		} else if (indestr) {
 			g.drawAnimation(destr, (float) x-64, (float) y-64);
-			return;
-		}
-		if (anim) {
+		} else if (anim) {
 			sprite_anim.drawCentered((float) x, (float) y);
 		} else {
 			sprite.drawCentered((float) x, (float) y);
@@ -153,17 +172,52 @@ public class StarcupBoss extends Ennemy implements Boss {
 		if (!initialized) {
 			return;
 		}
+		
+		shootcalc += delta;
+		switch (phase) {
+		case 1:
+			shootcalc2 += delta;
+			if (shootcalc2 > 5000 && y < 256) {
+				Points calc = new Points(Game.player.getShip().getX()-x, Game.player.getShip().getY()-y);
+				getLvl().insertShoot(shoot((int) calc.arg()));
+				shootcalc2 = 0;
+				shootcalc = 0;
+				break;
+			}
+		case 0:
+			if (shootcalc > 1000 && y < 600-128) {
+				getLvl().insertShoot(shoot(270));
+				shootcalc = 0;
+			}
+			break;
+		case 2:
+			if (shootcalc > 2000 && y < 600-160) {
+				for (float i=180;i<360;i+=22.5f) {
+					getLvl().insertShoot(shoot((int) i));
+				}
+				getLvl().insertShoot(shoot(0));
+				shootcalc = 0;
+			}
+		}
+		
 		if (indestr && destr.isStopped()) {
 			alive = false;
+			indestr = false;
 			return;
 		}
-		if (phase == 3) {
+		if (phase == 3 && alive && !indestr) {
 			Animation anim = new Animation();
 			anim.setLooping(false);
 			//code to insert anim of destruction here
-			finalize(anim);
+			finalize(dmged);
 		}
 		if (intrans || indmg) {
+			if (intrans && trans.isStopped()) {
+				intrans = false;
+			}
+			if (indmg && dmged.isStopped()) {
+				indmg = false;
+			}
 			return;
 		}
 		
@@ -177,7 +231,7 @@ public class StarcupBoss extends Ennemy implements Boss {
 	@Override
 	public int getColDmg() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 40;
 	}
 	
 	@Override
@@ -190,15 +244,24 @@ public class StarcupBoss extends Ennemy implements Boss {
 		if (x <= 64 || x >= 736) {
 			bounce(0);
 		}
+		if (y <= 64 || y >= 536) {
+			bounce(90);
+		}
 	}
 	
 	@Override
 	public boolean damage(int amount) {
 		// TODO Auto-generated method stub
-		super.damage(5);
+		super.damage(amount);
 		alive = true;
 		damaged();
-		return (HP > 0);
+		return true;
+	}
+	
+	@Override
+	public boolean isBoss() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 	public boolean isIndmg() {

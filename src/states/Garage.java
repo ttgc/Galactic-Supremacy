@@ -40,6 +40,7 @@ public class Garage extends BasicGameState {
 	private int indexc;
 	private int indexs;
 	private StateBasedGame sbg;
+	private Image button;
 
 	public Garage() {
 		// TODO Auto-generated constructor stub
@@ -48,12 +49,6 @@ public class Garage extends BasicGameState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		// TODO Auto-generated method stub
-		durab = new Jauge(gc.getGraphics(), 300, 350, 500, 375, new Color(255,255,255), new Color(255,0,0), new Color(0,0,0), false, true);
-		durab.setVmax(Game.player.getShip().getCanon().getDurability_max());
-		back = new Image("Pictures/background.png");
-		indexc = 0;
-		indexs = 0;
-		this.sbg = sbg;
 		if (Game.player.getShip().getCanon() == null) {
 			boolean refuel = true;
 			for (int i=0;i<Game.player.getCanon_inv().length;i++) {
@@ -65,6 +60,13 @@ public class Garage extends BasicGameState {
 				Game.player.getShip().setCanon(new BasicCanon(500, 1));
 			}
 		}
+		durab = new Jauge(gc.getGraphics(), 300, 350, 500, 375, new Color(255,255,255), new Color(255,0,0), new Color(0,0,0), false, true);
+		durab.setVmax(Game.player.getShip().getCanon().getDurability_max());
+		back = new Image("Pictures/background.png");
+		indexc = 0;
+		indexs = 0;
+		this.sbg = sbg;
+		button = new Image("Pictures/button.png");
 	}
 
 	@Override
@@ -119,6 +121,8 @@ public class Garage extends BasicGameState {
 		g.fill(tri);
 		tri.setY(150);
 		g.fill(tri);
+		g.drawImage(button, 800-button.getWidth(), 600-button.getHeight());
+		FontUtils.drawCenter(Level.getFonts()[1], "Recharger rockets", 800-button.getWidth(), 594-(button.getHeight()/2), button.getWidth(), new Color(0,0,0));
 
 	}
 	
@@ -140,6 +144,7 @@ public class Garage extends BasicGameState {
 				}
 			}
 			Game.player.switch_canon(indexc);
+			durab.setVmax(Game.player.getShip().getCanon().getDurability_max());
 		}
 		clickzone.update(525, 150);
 		if (clickzone.check_collision_point(x, y)) {
@@ -154,6 +159,7 @@ public class Garage extends BasicGameState {
 				}
 			}
 			Game.player.switch_canon(indexc);
+			durab.setVmax(Game.player.getShip().getCanon().getDurability_max());
 		}
 		
 		clickzone.update(275, 450);
@@ -176,13 +182,19 @@ public class Garage extends BasicGameState {
 			if (indexs >= Game.player.getShield_inv().length) {
 				indexs = 0;
 			}
-			while (Game.player.getCanon_inv()[indexs] == null) {
+			while (Game.player.getShield_inv()[indexs] == null) {
 				indexs++;
 				if (indexs >= Game.player.getShield_inv().length) {
 					return;
 				}
 			}
-			Game.player.switch_canon(indexs);
+			Game.player.switch_shield(indexs);
+		}
+		clickzone.setHeight(this.button.getHeight());
+		clickzone.setWidth(this.button.getWidth());
+		clickzone.update(800-(this.button.getWidth()/2), 600-(this.button.getHeight()/2));
+		if (clickzone.check_collision_point(x, y)) {
+			Game.player.recharge_rockets();
 		}
 	}
 	
@@ -191,6 +203,7 @@ public class Garage extends BasicGameState {
 		// TODO Auto-generated method stub
 		super.keyPressed(key, c);
 		if (key == Keyboard.KEY_ESCAPE) {
+			Game.player.save();
 			sbg.enterState(5);
 		}
 	}

@@ -26,6 +26,7 @@ public class Rocket {
 	private boolean explosed;
 	private int tickexplosion;
 	private boolean destroyed;
+	private static int speed = 4;
 	
 	public Rocket(double x, double y) {
 		this.x = x;
@@ -48,7 +49,7 @@ public class Rocket {
 			}
 			return;
 		}
-		y--;
+		y-=speed;
 		hitbox.update(x, y);
 	}
 	
