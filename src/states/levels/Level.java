@@ -23,7 +23,6 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -117,7 +116,9 @@ public abstract class Level extends BasicGameState {
 		player.getShip().getCanon().reload();
 		initObstacle();
 		initScrolling();
-		Game.music[1].play();
+		if (Game.isInit) {
+			Game.music[1].loop();
+		}
 		
 	}
 
@@ -173,20 +174,20 @@ public abstract class Level extends BasicGameState {
 			return;
 		}
 		
-		if (key == Keyboard.KEY_ESCAPE) {
+		if (key == Game.settings.getMap().getPause()/*Keyboard.KEY_ESCAPE*/) {
 			paused = !paused;
 		}
 		if (paused) {
 			return;
 		}
 		
-		if (key == Keyboard.KEY_1 && player.getShip().getRck_stock() > 0 && rck == null) {
+		if (key == Game.settings.getMap().getRocket()/*Keyboard.KEY_1*/ && player.getShip().getRck_stock() > 0 && rck == null) {
 			//missile
 			if (player.getShip().consume(10)) {
 				rck = player.getShip().use_rocket();
 			}
 		}
-		if (key == Keyboard.KEY_2 && player.getShip().getShield() != null) {
+		if (key == Game.settings.getMap().getShield()/*Keyboard.KEY_2*/ && player.getShip().getShield() != null) {
 			shieldcalculator = 0;
 			shieldregencalculator = 0;
 			if (player.getShip().getShield().isActiv()) {
@@ -195,10 +196,10 @@ public abstract class Level extends BasicGameState {
 				player.getShip().getShield().enable();
 			}
 		}
-		if (key == Keyboard.KEY_3 && (!player.getShip().getCanon().isOverheat())) {
+		if (key == Game.settings.getMap().getOverclock()/*Keyboard.KEY_3*/ && (!player.getShip().getCanon().isOverheat())) {
 			player.getShip().getCanon().overclock();
 		}
-		if (key == Keyboard.KEY_4 && player.getPower() != null && player.getPower().isAvalaible() && (!player.getPower().isUsed())) {
+		if (key == Game.settings.getMap().getPower()/*Keyboard.KEY_4*/ && player.getPower() != null && player.getPower().isAvalaible() && (!player.getPower().isUsed())) {
 			switch (player.getPower().getID()) {
 			default:
 				player.use_power(null);
@@ -212,19 +213,19 @@ public abstract class Level extends BasicGameState {
 			return;
 		}
 		
-		if (input.isKeyDown(Input.KEY_LEFT) && player.getShip().getX() > 32 && wallcheck(2)) {
+		if (input.isKeyDown(Game.settings.getMap().getLeft()/*Input.KEY_LEFT*/) && player.getShip().getX() > 32 && wallcheck(2)) {
 			player.getShip().setX(player.getShip().getX()-Ship.speed);
 		}
-		if (input.isKeyDown(Input.KEY_RIGHT) && player.getShip().getX() < 768 && wallcheck(0)) {
+		if (input.isKeyDown(Game.settings.getMap().getRight()/*Input.KEY_RIGHT*/) && player.getShip().getX() < 768 && wallcheck(0)) {
 			player.getShip().setX(player.getShip().getX()+Ship.speed);
 		}
-		/*if (input.isKeyDown(Input.KEY_DOWN) && player.getShip().getY() < 568 && wallcheck(3)) {
+		/*if (input.isKeyDown(Game.settings.getMap().getDown()Input.KEY_DOWN) && player.getShip().getY() < 568 && wallcheck(3)) {
 			player.getShip().setY(player.getShip().getY()+Ship.speed);
 		}
-		if (input.isKeyDown(Input.KEY_UP) && player.getShip().getY() > 32 && wallcheck(1)) {
+		if (input.isKeyDown(Game.settings.getMap().getUp()Input.KEY_UP) && player.getShip().getY() > 32 && wallcheck(1)) {
 			player.getShip().setY(player.getShip().getY()-Ship.speed);
 		}*/
-		if (input.isKeyDown(Input.KEY_SPACE) && canshoot && (!player.getShip().getCanon().isOverheat())) {
+		if (input.isKeyDown(Game.settings.getMap().getShoot()/*Input.KEY_SPACE*/) && canshoot && (!player.getShip().getCanon().isOverheat())) {
 			canshoot = false;
 			Shoot[] tirs = player.getShip().getCanon().shoot(player.getShip().getX(),player.getShip().getY());
 			for (int i=0;i<tirs.length;i++) {

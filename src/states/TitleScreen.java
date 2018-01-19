@@ -49,11 +49,12 @@ public class TitleScreen extends BasicGameState {
 		Ennemy.initHitbox();
 		if (Game.music == null) {
 			Game.initMusic();
+			Game.initMusicSystem(gc);
 		}
 		back = new Image("Pictures/background.png");
 		button = new Image("Pictures/button.png");
 		game = sbg;
-		Game.music[0].play();
+		Game.music[0].loop();
 		
 		//testing
 		//Game.player.earnmoney(9999999);
@@ -136,8 +137,11 @@ public class TitleScreen extends BasicGameState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		// TODO Auto-generated method stub
-		if (!Game.music[0].playing()) {
-			Game.music[0].play();
+		/*if (!Game.music[0].playing()) {
+			Game.music[0].loop();
+		}*/
+		if (!Game.isInit) {
+			Game.isInit = true;
 		}
 	}
 

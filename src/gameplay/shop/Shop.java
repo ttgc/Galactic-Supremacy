@@ -81,7 +81,9 @@ public class Shop extends BasicGameState {
 		sprites = new Image[10];
 		initSprites();
 		game = sbg;
-		Game.music[2].play();
+		if (Game.isInit) {
+			Game.music[2].play();
+		}
 
 	}
 

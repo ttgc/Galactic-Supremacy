@@ -50,10 +50,14 @@ public class Worldmap extends BasicGameState {
 		map.add_level(508, 418);
 		map.add_level(200, 316);
 		map.add_level(308, 236);
-		map.add_level(308, 188);
 		map.add_level(416, 108);
+		map.add_level(416, -96);
+		map.add_level(308, -188);
 		ship = new Image("Pictures/ship.png");
 		game= sbg;
+		if (Game.isInit && !Game.music[4].playing()) {
+			Game.music[4].loop();
+		}
 
 	}
 
@@ -82,8 +86,10 @@ public class Worldmap extends BasicGameState {
 			game.enterState(6);
 		} else if (key == Keyboard.KEY_UP || key == Keyboard.KEY_RIGHT) {
 			map.forward();
+			map.setOrigin(0, map.getWorldOf(map.getPosition()).getOrigin());
 		} else if (key == Keyboard.KEY_DOWN || key == Keyboard.KEY_LEFT) {
 			map.backward();
+			map.setOrigin(0, map.getWorldOf(map.getPosition()).getOrigin());
 		}
 	}
 

@@ -48,6 +48,71 @@ public class Keymap implements Serializable {
 		power = Keyboard.KEY_4;
 		pause = Keyboard.KEY_ESCAPE;
 	}
+	
+	public void assign(KeyType key, int val) {
+		switch(key) {
+		case Down:
+			down = val;
+			break;
+		case Left:
+			left = val;
+			break;
+		case Overclock:
+			overclock = val;
+			break;
+		case Pause:
+			pause = val;
+			break;
+		case Power:
+			power = val;
+			break;
+		case Right:
+			right = val;
+			break;
+		case Rocket:
+			rocket = val;
+			break;
+		case Shield:
+			shield = val;
+			break;
+		case Shoot:
+			shoot = val;
+			break;
+		case Up:
+			up = val;
+			break;
+		}
+	}
+	
+	public static String getName(KeyType key) {
+		if (key == null) {
+			return "";
+		}
+		switch(key) {
+		case Down:
+			return "Bas";
+		case Left:
+			return "Gauche";
+		case Overclock:
+			return "Overclock";
+		case Pause:
+			return "Pause";
+		case Power:
+			return "Pouvoir";
+		case Right:
+			return "Droite";
+		case Rocket:
+			return "Missiles";
+		case Shield:
+			return "Bouclier";
+		case Shoot:
+			return "Tirer";
+		case Up:
+			return "Haut";
+		default:
+			return "";
+		}
+	}
 
 	public int getUp() {
 		return up;

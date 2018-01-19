@@ -67,6 +67,9 @@ public class Garage extends BasicGameState {
 		indexs = 0;
 		this.sbg = sbg;
 		button = new Image("Pictures/button.png");
+		if (Game.isInit) {
+			Game.music[5].loop();
+		}
 	}
 
 	@Override

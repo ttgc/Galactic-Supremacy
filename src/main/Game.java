@@ -46,6 +46,7 @@ public class Game extends StateBasedGame {
 	public static Player player;
 	public static Settings settings;
 	public static Music[] music;
+	public static boolean isInit;
 
 	public Game(String name) {
 		super(name);
@@ -94,6 +95,7 @@ public class Game extends StateBasedGame {
 		ShopManager.initShops();
 		//Ennemy.initHitbox();
 		//Starcup.init();
+		isInit = false;
 						
 		AppGameContainer app;
 		try {
@@ -102,7 +104,6 @@ public class Game extends StateBasedGame {
 			app.setShowFPS(false);
 			app.setFullscreen(settings.isFullscreen());
 			app.setIcon("Pictures/ship.png");
-			initMusicSystem(app);
 			app.start();
 		} catch(SlickException e){
 			e.printStackTrace();
@@ -110,12 +111,12 @@ public class Game extends StateBasedGame {
 
 	}
 
-	private static void initMusicSystem(AppGameContainer app) {
+	public static void initMusicSystem(GameContainer gc) {
 		// TODO Auto-generated method stub
-		app.setMusicOn(!settings.isMusic_mute());
-		app.setSoundOn(!settings.isSound_mute());
-		app.setMusicVolume((float)settings.getMusic_volume()/100.f);
-		app.setSoundVolume((float)settings.getSound_volume()/100.f);
+		gc.setMusicOn(!settings.isMusic_mute());
+		gc.setSoundOn(!settings.isSound_mute());
+		gc.setMusicVolume((float)settings.getMusic_volume()/100.f);
+		gc.setSoundVolume((float)settings.getSound_volume()/100.f);
 	}
 
 	private static void initDirectories() {
@@ -161,10 +162,13 @@ public class Game extends StateBasedGame {
 	}
 	
 	public static void initMusic() throws SlickException {
-		music = new Music[3];
+		music = new Music[6];
 		music[0] = new Music("Music/titlescreen.ogg");
 		music[1] = new Music("Music/battle.ogg");
 		music[2] = new Music("Music/shop.ogg");
+		music[3] = new Music("Music/settings.ogg");
+		music[4] = new Music("Music/mapmonde.ogg");
+		music[5] = new Music("Music/garage.ogg");
 	}
 
 }

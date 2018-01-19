@@ -71,7 +71,8 @@ public class WavePower extends SuperPower {
 		}
 	}
 
-	public void refresh() {
+	@Override
+	protected void refresh() {
 		// TODO Auto-generated method stub
 		if (time%30 == 25) {
 			flash = true;

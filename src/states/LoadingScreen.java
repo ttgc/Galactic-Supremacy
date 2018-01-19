@@ -10,6 +10,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
+import main.Game;
 import states.levels.Level;
 
 public class LoadingScreen extends BasicGameState {
@@ -31,6 +32,9 @@ public class LoadingScreen extends BasicGameState {
 		keys[4] = new Image("Pictures/3_keyboard.png");
 		keys[5] = new Image("Pictures/4_keyboard.png");
 		game = sbg;
+		if (Game.isInit) {
+			Game.music[4].loop();
+		}
 				
 	}
 
