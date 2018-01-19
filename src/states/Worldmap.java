@@ -48,11 +48,11 @@ public class Worldmap extends BasicGameState {
 		//définition des niveaux
 		map.add_level(600, 508);
 		map.add_level(508, 418);
-		map.add_level(200, 316);
+		/*map.add_level(200, 316);
 		map.add_level(308, 236);
 		map.add_level(416, 108);
 		map.add_level(416, -96);
-		map.add_level(308, -188);
+		map.add_level(308, -188);*/
 		ship = new Image("Pictures/ship.png");
 		game= sbg;
 		if (Game.isInit && !Game.music[4].playing()) {
