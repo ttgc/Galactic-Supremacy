@@ -32,20 +32,20 @@ import states.levels.Level;
 
 public class RayPower extends SuperPower {
 	private static final long serialVersionUID = -6395027885373717666L;
-	private static Image spr = Level.getRessources()[3];
-	private Animation anim;
+	private transient static Image spr = Level.getRessources()[3];
+	private transient Animation anim;
 	private Hitbox hitbox;
 	private float x;
 	private float y;
-	private Level lvl;
+	private transient Level lvl;
 
 	public RayPower() {
 		super(spr);
 		// TODO Auto-generated constructor stub
 		anim = new Animation();
 		Image cpy;
-		for (int i=29;i>0;i--) {
-			cpy = spr.getScaledCopy(spr.getWidth(), spr.getHeight()/10);
+		for (int i=0;i<30;i++) {
+			cpy = spr.getScaledCopy(spr.getWidth(), (i+1)*spr.getHeight()/30);
 			anim.addFrame(cpy, 66);
 		}
 		anim.addFrame(spr, 33);
@@ -54,7 +54,7 @@ public class RayPower extends SuperPower {
 		hitbox = new Hitbox(anim.getCurrentFrame().getWidth(), anim.getCurrentFrame().getHeight());
 		x = (float) Game.player.getShip().getX();
 		y = (float) (Game.player.getShip().getY()-32);
-		hitbox.update(x, y);
+		hitbox.update(x, y-(anim.getCurrentFrame().getHeight()/2));
 		lvl = null;
 	}
 
@@ -91,12 +91,28 @@ public class RayPower extends SuperPower {
 		// TODO Auto-generated method stub
 		x = (float) Game.player.getShip().getX();
 		y = (float) Game.player.getShip().getY()-32;
-		hitbox.update(x, y);
+		int transy;
+		if (!anim.isStopped()) {
+			hitbox.setHeight(anim.getCurrentFrame().getHeight());
+			hitbox.setWidth(anim.getCurrentFrame().getWidth());
+			transy = anim.getCurrentFrame().getHeight()/2;
+		} else {
+			hitbox.setHeight(spr.getHeight());
+			hitbox.setWidth(spr.getWidth());
+			transy = spr.getHeight()/2;
+		}
+		hitbox.update(x, y-transy);
 		
 		for (int i=0;i<lvl.getEnnemies().size();i++) {
 			if (lvl.getEnnemies().get(i).getHitbox().check_collision(hitbox)) {
-				lvl.getEnnemies().get(i).damage(100);
+				if (!lvl.getEnnemies().get(i).damage(100)) {
+					lvl.removeMob(i);
+				}
 			}
+		}
+		
+		if (time == 120) {
+			stop();
 		}
 
 	}
@@ -105,6 +121,26 @@ public class RayPower extends SuperPower {
 	public int getID() {
 		// TODO Auto-generated method stub
 		return 1;
+	}
+
+	public static Image getSpr() {
+		return spr;
+	}
+
+	public Animation getAnim() {
+		return anim;
+	}
+
+	public Hitbox getHitbox() {
+		return hitbox;
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
 	}
 
 }

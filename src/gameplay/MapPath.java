@@ -129,7 +129,7 @@ public class MapPath {
 		int diffx = xorlev-xlev.get(0);
 		int diffy = yorlev-ylev.get(0);
 		translate(diffx, diffy);
-		translate(xor, yor);
+		translate(xor, -yor);
 	}
 	
 	public void resetOrigin() {

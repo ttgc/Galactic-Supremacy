@@ -41,6 +41,8 @@ import states.Worldmap;
 import states.levels.Level_1;
 import states.levels.Level_2;
 import states.levels.Level_3;
+import states.levels.Level_4;
+import states.levels.Level_5;
 
 public class Game extends StateBasedGame {
 	public static Player player;
@@ -66,6 +68,8 @@ public class Game extends StateBasedGame {
 		addState(new Level_1());
 		addState(new Level_2());
 		addState(new Level_3());
+		addState(new Level_4());
+		addState(new Level_5());
 
 	}
 	

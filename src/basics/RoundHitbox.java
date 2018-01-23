@@ -44,15 +44,15 @@ public class RoundHitbox implements Serializable {
 	}
 	
 	public boolean check_collision_point(double x, double y) {
-		double normehit = norme(xor,yor);
-		double normept = norme(x,y);
-		return (Math.abs(normehit-normept) <= r);
+		//double normehit = norme(xor,yor);
+		//double normept = norme(x,y);
+		return (norme(xor-x, yor-y) <= r);
 	}
 	
 	public boolean check_collision(RoundHitbox hitbox) {
-		double norme1 = norme(xor,yor);
-		double norme2 = norme(hitbox.xor,hitbox.yor);
-		return (Math.abs(norme1-norme2) <= r+hitbox.r);
+		//double norme1 = norme(xor,yor);
+		//double norme2 = norme(hitbox.xor,hitbox.yor);
+		return (norme(xor-hitbox.xor, yor-hitbox.yor) <= r+hitbox.r);
 	}
 	
 	public void update(double x, double y) {

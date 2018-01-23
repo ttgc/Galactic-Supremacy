@@ -60,7 +60,7 @@ public class Shop extends BasicGameState {
 		// TODO Auto-generated method stub
 		ShopManager.import_data();
 		int[] avalaible = null;
-		if (Game.player.getLevel() < 10) {
+		if (Game.player.getLevel() <= 6) {
 			avalaible = new int[6];
 			avalaible[0] = 0;
 			avalaible[1] = 3;
@@ -68,8 +68,25 @@ public class Shop extends BasicGameState {
 			avalaible[3] = 5;
 			avalaible[4] = 6;
 			avalaible[5] = 7;
-		} else if (Game.player.getLevel() < 20) {
-			
+		} else if (Game.player.getLevel() <= 10) {
+			avalaible = new int[11];
+			avalaible[0] = 0;
+			avalaible[1] = 1;
+			avalaible[2] = 3;
+			avalaible[3] = 4;
+			avalaible[4] = 5;
+			avalaible[5] = 6;
+			avalaible[6] = 7;
+			avalaible[7] = 8;
+			avalaible[8] = 9;
+			avalaible[9] = 0;
+			avalaible[10] = 0;
+			if (ShopManager.getBought()[5]) {
+				avalaible[9] = 10;
+			}
+			if (ShopManager.getBought()[7]) {
+				avalaible[10] = 11;
+			}
 		} else if (Game.player.getLevel() < 30) {
 			
 		} else {
@@ -78,7 +95,7 @@ public class Shop extends BasicGameState {
 		manager = new ShopManager(avalaible);
 		button = new Image("Pictures/button.png");
 		back = new Image("Pictures/background.png");
-		sprites = new Image[10];
+		sprites = new Image[12];
 		initSprites();
 		game = sbg;
 		if (Game.isInit) {
@@ -187,6 +204,15 @@ public class Shop extends BasicGameState {
 						e.printStackTrace();
 					}
 					break;
+				case 10:
+					Game.player.getShip().upgrade_rocket();
+					refund = false;
+					break;
+				case 11:
+					Game.player.getShip().setHPmax(Game.player.getShip().getHPmax()+50);
+					Game.player.getShip().fullheal();
+					refund = false;
+					break;
 				default:
 					try {
 						throw new ShopException("Not found item");
@@ -266,12 +292,18 @@ public class Shop extends BasicGameState {
 	
 	private void initSprites() throws SlickException {
 		// TODO Auto-generated method stub
-		sprites[0] = new Image("Pictures/canon_shop.png");
+		sprites[0] = new Image("Pictures/double_canon_shop.png");
+		sprites[1] = new Image("Pictures/triple_canon_shop.png");
+		sprites[2] = new Image("Pictures/quintuple_canon _shop.png");
 		sprites[3] = new Image("Pictures/shield_shop.png");
 		sprites[4] = new Image("Pictures/canon_shop.png");
 		sprites[5] = new Image("Pictures/rocket-upgrade_shop.png");
 		sprites[6] = new Image("Pictures/rocket_shop.png");
 		sprites[7] = new Image("Pictures/life_shop.png");
+		sprites[8] = new Image("Pictures/shield_shop.png");
+		sprites[9] = new Image("Pictures/shield_shop.png");
+		sprites[10] = new Image("Pictures/rocket-upgrade_shop.png");
+		sprites[11] = new Image("Pictures/life_shop.png");
 		
 	}
 

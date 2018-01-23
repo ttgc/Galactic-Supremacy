@@ -50,7 +50,10 @@ public class PowerupHeat extends Powerup {
 	@Override
 	public int getID() {
 		// TODO Auto-generated method stub
-		return 4;
+		if (!malus) {
+			return 4;
+		}
+		return 11;
 	}
 
 }

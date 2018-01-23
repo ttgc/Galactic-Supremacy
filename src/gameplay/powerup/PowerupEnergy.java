@@ -31,7 +31,7 @@ public class PowerupEnergy extends Powerup {
 	@Override
 	public void transfer(Player target) {
 		// TODO Auto-generated method stub
-		if (down) {
+		if (!down) {
 			target.getShip().recharge(25);
 		} else {
 			boolean test;
@@ -46,7 +46,10 @@ public class PowerupEnergy extends Powerup {
 	@Override
 	public int getID() {
 		// TODO Auto-generated method stub
-		return 2;
+		if (!down) {
+			return 2;
+		} 
+		return 10;
 	}
 
 }

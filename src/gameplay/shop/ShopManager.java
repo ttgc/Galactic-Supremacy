@@ -32,7 +32,7 @@ public class ShopManager {
 
 	public ShopManager(int[] id_avalaible) {
 		// TODO Auto-generated constructor stub
-		int nbr = 10;
+		int nbr = 12;
 		name = new String[nbr];
 		description = new String[nbr];
 		prices = new int[nbr];
@@ -207,7 +207,7 @@ public class ShopManager {
 		description[6] = "Pack de 2 rockets";
 		prices[6] = 150;
 		//item 7 = Upgrade sante 1
-		name[7] = "Amelioration Sante 1";
+		name[7] = "Amelioration Sante I";
 		description[7] = "Augmente la sante de 50 points";
 		prices[7] = 1000;
 		//item 8 = Bouclier regenerant
@@ -218,6 +218,14 @@ public class ShopManager {
 		name[9] = "Bouclier puissant";
 		description[9] = "Un bouclier unique surpuissant";
 		prices[9] = 2000;
+		//item 10 = Upgrade rocket 2
+		name[10] = "Amelioration Rocket II";
+		description[10] = "Permet de transporter 2 rockets supplementaires";
+		prices[10] = 1500;
+		//item 11 = Upgrade sante 2
+		name[11] = "Amelioration Sante II";
+		description[11] = "Augmente la sante de 50 points";
+		prices[11] = 2000;
 
 	}
 	
@@ -237,7 +245,7 @@ public class ShopManager {
 	}
 	
 	public static void initShops() {
-		int nbr = 10;
+		int nbr = 12;
 		bought = new boolean[nbr];
 		onlyonetime = new boolean[nbr];
 		for (int i=0;i<nbr;i++) {
@@ -250,6 +258,8 @@ public class ShopManager {
 		onlyonetime[5] = true;
 		onlyonetime[7] = true;
 		onlyonetime[9] = true;
+		onlyonetime[10] = true;
+		onlyonetime[11] = true;
 	}
 	
 	public static void resetBought(int id) {

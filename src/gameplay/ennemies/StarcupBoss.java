@@ -23,6 +23,7 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 
 import basics.Points;
 import exceptions.SpawnException;
@@ -61,23 +62,20 @@ public class StarcupBoss extends Ennemy implements Boss {
 		dmged.setAutoUpdate(true);
 		dmged.addFrame(sprite, 33);
 		Image cpy = sprite.copy();
-		int prg = 255/14;
-		for (int i=0;i<14;i++) {
-			cpy.setImageColor(prg, 0, 0);
-			dmged.addFrame(cpy, 33);
-			prg += 255/14;
-			cpy = cpy.copy();
-		}
 		cpy.setImageColor(255, 0, 0);
-		dmged.addFrame(cpy, 33);
-		cpy = cpy.copy();
-		for (int i=0;i<14;i++) {
-			cpy.setImageColor(prg, 0, 0);
-			dmged.addFrame(cpy, 33);
-			prg -= 255/14;
-			cpy = cpy.copy();
-		}
+		dmged.addFrame(cpy, 66);
 		dmged.addFrame(sprite, 33);
+		try {
+			trans = new Animation(new SpriteSheet("Pictures/explosion.png", 128, 128), 33);
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		trans.setLooping(false);
+		trans.setAutoUpdate(true);
+		destr = trans.copy();
+		destr.setLooping(false);
+		destr.setAutoUpdate(true);
 		initialized = false;
 		indmg = false;
 		indestr = false;
@@ -100,7 +98,6 @@ public class StarcupBoss extends Ennemy implements Boss {
 	@Override
 	public void finalize(Animation destruction) {
 		// TODO Auto-generated method stub
-		destr = destruction;
 		indestr = true;
 		destr.restart();
 	}
@@ -110,19 +107,12 @@ public class StarcupBoss extends Ennemy implements Boss {
 		// TODO Auto-generated method stub
 		indmg = true;
 		dmged.restart();
-		Animation anim;
 		switch(HP) {
 		case 500:
-			anim = new Animation();
-			anim.setLooping(false);
-			//code of anim trans phase 1 -> 2
-			transition(dmged, sprite);
+			transition(trans, sprite);
 			break;
 		case 250:
-			anim = new Animation();
-			anim.setLooping(false);
-			//code of anim trans phase 2 -> 3
-			transition(dmged, sprite);
+			transition(trans, sprite);
 			break;
 		case 0:
 			phase++;
@@ -132,7 +122,6 @@ public class StarcupBoss extends Ennemy implements Boss {
 	@Override
 	public void transition(Animation anim, Image newspr) {
 		// TODO Auto-generated method stub
-		trans = anim;
 		intrans = true;
 		trans.restart();
 		phase++;
@@ -153,17 +142,19 @@ public class StarcupBoss extends Ennemy implements Boss {
 	@Override
 	public void render(Graphics g) {
 		// TODO Auto-generated method stub
-		if (indmg) {
-			g.drawAnimation(dmged, (float) x-64, (float) y-64);
-		} else if (intrans) {
-			g.drawAnimation(trans, (float) x-64, (float) y-64);
-		} else if (indestr) {
-			g.drawAnimation(destr, (float) x-64, (float) y-64);
-		} else if (anim) {
+		if (anim) {
 			sprite_anim.drawCentered((float) x, (float) y);
 		} else {
 			sprite.drawCentered((float) x, (float) y);
 		}
+		
+		if (indmg) {
+			g.drawAnimation(dmged, (float) x-64, (float) y-64);
+		} else if (intrans) {
+			trans.draw((float) x-16, (float) y-16, 32, 32);
+		} else if (indestr) {
+			g.drawAnimation(destr, (float) x-64, (float) y-64);
+		} 
 	}
 
 	@Override
@@ -206,10 +197,7 @@ public class StarcupBoss extends Ennemy implements Boss {
 			return;
 		}
 		if (phase == 3 && alive && !indestr) {
-			Animation anim = new Animation();
-			anim.setLooping(false);
-			//code to insert anim of destruction here
-			finalize(dmged);
+			finalize(destr);
 		}
 		if (intrans || indmg) {
 			if (intrans && trans.isStopped()) {
