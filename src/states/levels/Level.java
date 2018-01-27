@@ -791,13 +791,13 @@ public abstract class Level extends BasicGameState {
 	
 	@SuppressWarnings("unchecked")
 	public static void initFont() throws SlickException {
-		fonts = new UnicodeFont[2];
+		fonts = new UnicodeFont[3];
 		ColorEffect a = new ColorEffect();
 		
-		String[] list = {"Font/spaceboy.ttf","Font/spaceboy.ttf"};
-		int[] size = {32,14};
-		boolean[] bold = {false,false};
-		boolean[] italic = {false,false};
+		String[] list = {"Font/spaceboy.ttf","Font/spaceboy.ttf","Font/spacebit.ttf"};
+		int[] size = {32,14,32};
+		boolean[] bold = {false,false,true};
+		boolean[] italic = {false,false,false};
 		
 		for (int i=0;i<fonts.length;i++) {
 			fonts[i] = new UnicodeFont(list[i],size[i],bold[i],italic[i]);

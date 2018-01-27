@@ -33,6 +33,7 @@ import gameplay.shop.Shop;
 import gameplay.shop.ShopManager;
 import settings.Settings;
 import settings.SettingsRoom;
+import states.Credits;
 import states.GameOverScreen;
 import states.Garage;
 import states.LoadingScreen;
@@ -72,6 +73,7 @@ public class Game extends StateBasedGame {
 		addState(new Level_4());
 		addState(new Level_5());
 		addState(new Level_6());
+		addState(new Credits());
 
 	}
 	
