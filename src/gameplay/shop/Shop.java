@@ -169,6 +169,7 @@ public class Shop extends BasicGameState {
 						refund = !Game.player.add_shield(sdp);
 					} catch (Exception e) {
 						e.printStackTrace();
+						refund = true;
 					}
 					break;
 				case 4:
@@ -190,10 +191,11 @@ public class Shop extends BasicGameState {
 					break;
 				case 8:
 					try {
-						Shield sdp = new Shield(250, 1+rdm.nextInt(10), true, false, 0, 2.5f);
+						Shield sdp = new Shield(250, 1+rdm.nextInt(10), true, false, 0, (float) ((float) Math.round(Math.random()*100))/100.f);
 						refund = !Game.player.add_shield(sdp);
 					} catch (Exception e) {
 						e.printStackTrace();
+						refund = true;
 					}
 					break;
 				case 9:
@@ -202,6 +204,7 @@ public class Shop extends BasicGameState {
 						refund = !Game.player.add_shield(sdp);
 					} catch (Exception e) {
 						e.printStackTrace();
+						refund = true;
 					}
 					break;
 				case 10:

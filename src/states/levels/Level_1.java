@@ -28,7 +28,7 @@ import basics.Hitbox;
 import basics.Points;
 import exceptions.SpawnException;
 import gameplay.Dialog;
-import gameplay.Wall;
+import gameplay.obstacles.Wall;
 
 public class Level_1 extends Level {
 	private int ennemycount;

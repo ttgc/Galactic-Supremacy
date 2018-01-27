@@ -56,11 +56,11 @@ public class Shield implements Serializable {
 	public String toString() {
 		// TODO Auto-generated method stub
 		String str = "HP : "+HP+"\nHP max : "+HPmax+"\nEnergy : "+energytick+" ticks";
-		String mtime = String.valueOf(active_max_time);
+		String mtime = String.valueOf(active_max_time)+"s";
 		if (active_max_time == 0) {
 			mtime = "Unlimited";
 		}
-		str += ("\ntime max : "+mtime+"s");
+		str += ("\ntime max : "+mtime);
 		String reg = "No regen";
 		if (regenerate) {
 			reg = "x"+regen;

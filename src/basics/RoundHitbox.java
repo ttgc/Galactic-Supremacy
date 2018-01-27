@@ -43,6 +43,11 @@ public class RoundHitbox implements Serializable {
 		yor = hitbox.getYor();
 	}
 	
+	@Override
+	public String toString() {
+		return "RoundHitbox [r=" + r + ", xor=" + xor + ", yor=" + yor + "]";
+	}
+	
 	public boolean check_collision_point(double x, double y) {
 		//double normehit = norme(xor,yor);
 		//double normept = norme(x,y);
@@ -69,7 +74,15 @@ public class RoundHitbox implements Serializable {
 		x = r*Math.cos(Math.toRadians(direction));
 		y = r*Math.sin(Math.toRadians(direction));
 		double[] vecOA = {x-xor,y-yor};*/
-		return 0;
+		double theta = direction - 180;
+		if (theta < 0) {
+			theta += 360;
+		}
+		double angle = (180-direction)+2*(theta-90);
+		if (angle < 0) {
+			angle += 360;
+		}
+		return angle;
 	}
 
 	public int getR() {

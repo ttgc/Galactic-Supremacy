@@ -17,6 +17,8 @@ public class StarshooterBoss extends Ennemy implements Boss {
 	private Animation dmg;
 	private boolean explose;
 	private boolean hasdmged;
+	private int frame;
+	private int time;
 
 	public StarshooterBoss(Level lvl) throws SpawnException {
 		super(400, 300, 0, 5, 1000, lvl);
@@ -53,6 +55,8 @@ public class StarshooterBoss extends Ennemy implements Boss {
 		dmg.setAutoUpdate(true);
 		explose = false;
 		hasdmged = false;
+		frame = base.getFrame();
+		time = 0;
 	}
 
 	@Override
@@ -65,6 +69,9 @@ public class StarshooterBoss extends Ennemy implements Boss {
 	@Override
 	public void finalize(Animation destruction) {
 		// TODO Auto-generated method stub
+		if (!initialized) {
+			return;
+		}
 		base.setLooping(false);
 		dmg.stop();
 		dmg.setCurrentFrame(0);
@@ -86,7 +93,8 @@ public class StarshooterBoss extends Ennemy implements Boss {
 	public void transition(Animation anim, Image newspr) {
 		// TODO Auto-generated method stub
 		base.setSpeed(base.getSpeed()*2);
-		anim.start();
+		dmg.start();
+		dmg.setCurrentFrame(0);
 	}
 
 	@Override
@@ -119,6 +127,24 @@ public class StarshooterBoss extends Ennemy implements Boss {
 	@Override
 	public void update(int delta) {
 		// TODO Auto-generated method stub
+		if (!initialized) {
+			return;
+		}
+		
+		time += delta;
+		if (frame != base.getFrame() && base.getImage(frame).getRotation() > base.getCurrentFrame().getRotation() && time >= 330/base.getSpeed()) {
+			frame = base.getFrame();
+			getLvl().insertShoot(shoot((int) (270-base.getCurrentFrame().getRotation())));
+			time = 0;
+		} else if (frame != base.getFrame()) {
+			frame = base.getFrame();
+		}
+		/*time += delta;
+		if (time > 500) {
+			getLvl().insertShoot(shoot((int) (270-base.getCurrentFrame().getRotation())));
+			time = 0;
+		}*/
+		
 		if (indestr && base.isStopped()) {
 			direction = 270;
 			speed = 8;
@@ -127,7 +153,9 @@ public class StarshooterBoss extends Ennemy implements Boss {
 				y = 536;
 				if (!explose) {
 					dmg.restart();
+					dmg.setCurrentFrame(0);
 					explose = true;
+					return;
 				}
 				if (dmg.isStopped()) {
 					alive = false;
@@ -145,6 +173,9 @@ public class StarshooterBoss extends Ennemy implements Boss {
 	@Override
 	public void tick() {
 		// TODO Auto-generated method stub
+		if (!initialized) {
+			return;
+		}
 		if (indestr && base.isStopped() && direction == 270) {
 			super.tick();
 		}
@@ -153,9 +184,14 @@ public class StarshooterBoss extends Ennemy implements Boss {
 	@Override
 	public boolean damage(int amount) {
 		// TODO Auto-generated method stub
+		if (!initialized) {
+			return true;
+		}
 		super.damage(amount);
 		if (HP > 0) {
 			damaged();
+		} else {
+			finalize(null);
 		}
 		return true;
 	}
@@ -164,6 +200,7 @@ public class StarshooterBoss extends Ennemy implements Boss {
 	public int getColDmg() {
 		// TODO Auto-generated method stub
 		if (!hasdmged) {
+			hasdmged = true;
 			return 100;
 		} 
 		return 0;

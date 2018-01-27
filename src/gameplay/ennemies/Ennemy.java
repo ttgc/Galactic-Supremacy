@@ -66,6 +66,7 @@ public abstract class Ennemy {
 		hitbox = new Hitbox(hitbox_ref[res_i]);
 		rhitbox = new RoundHitbox(hitbox);
 		hitbox.update(x, y);
+		rhitbox.update(x, y);
 		speed = 1;
 		this.lvl = lvl;
 	}
@@ -79,6 +80,7 @@ public abstract class Ennemy {
 		x += speed*Math.cos(Math.toRadians(direction));
 		y += -speed*Math.sin(Math.toRadians(direction));
 		hitbox.update(x,y);
+		rhitbox.update(x, y);
 	}
 	
 	public Shoot shoot(int dir) {
@@ -146,9 +148,17 @@ public abstract class Ennemy {
 	public double getX() {
 		return x;
 	}
+	
+	public void setX(double x) {
+		this.x = x;
+	}
 
 	public double getY() {
 		return y;
+	}
+	
+	public void setY(double y) {
+		this.y = y;
 	}
 
 	public int getDirection() {
@@ -183,7 +193,7 @@ public abstract class Ennemy {
 	public static void initHitbox() {
 		hitbox_ref = new Hitbox[Level.getEnnemies_res().length];
 		for (int i=0;i<Level.getEnnemies_res().length;i++) {
-			if (i == 2) {
+			if (i == 2 || i == 5) {
 				hitbox_ref[i] = new Hitbox(128,128);
 				continue;
 			}

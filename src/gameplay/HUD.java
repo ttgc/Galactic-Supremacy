@@ -34,6 +34,8 @@ public class HUD {
 	private Jauge health;
 	private Jauge energy;
 	private ProgressJauge heat;
+	private boolean hasShield;
+	private boolean hasPower;
 
 	public HUD(Graphics g) {
 		// TODO Auto-generated constructor stub
@@ -52,6 +54,8 @@ public class HUD {
 		health.setVmax(p.getShip().getHPmax());
 		energy.setVmax(p.getShip().getEnergy_max());
 		heat.setVmax(100);
+		hasShield = (p.getShip().getShield() != null);
+		hasPower = false;
 	}
 	
 	public void renderHUD() {
@@ -63,6 +67,15 @@ public class HUD {
 		health.draw();
 		energy.draw();
 		heat.draw();
+		
+		hasShield = (p.getShip().getShield() != null);
+		hasPower = (p.getPower() != null && p.getPower().isAvalaible() && !p.getPower().isUsed() && !p.getPower().isInuse());
+		if (hasShield) {
+			g.drawImage(Level.getPlayer_res()[6].getScaledCopy(32, 32), 36, 600-36);
+		}
+		if (hasPower) {
+			g.drawImage(Level.getPowerup_res()[7], 36, 600-76);
+		}
 		
 		g.setColor(new Color(255,255,255));
 		g.drawImage(Level.getPlayer_res()[1], 76, 564);

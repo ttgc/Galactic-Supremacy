@@ -242,6 +242,14 @@ public class ShopManager {
 		}
 		bought = sav.getBougth();
 		onlyonetime = sav.getOnlyonetime();
+		
+		//fix shop
+		/*boolean[] b = sav.getBougth();
+		boolean[] o = sav.getOnlyonetime();
+		for (int i=0;i<b.length;i++) {
+			bought[i] = b[i];
+			onlyonetime[i] = o[i];
+		}*/
 	}
 	
 	public static void initShops() {

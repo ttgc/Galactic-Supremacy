@@ -32,7 +32,7 @@ import states.levels.Level;
 
 public class RayPower extends SuperPower {
 	private static final long serialVersionUID = -6395027885373717666L;
-	private transient static Image spr = Level.getRessources()[3];
+	private static Image spr;
 	private transient Animation anim;
 	private Hitbox hitbox;
 	private float x;
@@ -141,6 +141,10 @@ public class RayPower extends SuperPower {
 
 	public float getY() {
 		return y;
+	}
+	
+	public static void initRaypower() {
+		 spr = Level.getRessources()[3];
 	}
 
 }

@@ -23,12 +23,14 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.BasicGameState;
@@ -36,17 +38,20 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
 import basics.Hitbox;
+import basics.RoundHitbox;
 import exceptions.SpawnException;
 import gameplay.HUD;
 import gameplay.Shoot;
-import gameplay.Wall;
 import gameplay.ennemies.Ennemy;
 import gameplay.ennemies.Starball;
 import gameplay.ennemies.Starcup;
 import gameplay.ennemies.Starroll;
+import gameplay.ennemies.Starshooter;
+import gameplay.obstacles.Wall;
 import gameplay.player.Player;
 import gameplay.player.Rocket;
 import gameplay.player.Ship;
+import gameplay.player.superpower.RayPower;
 import gameplay.powerup.Powerup;
 import main.Game;
 
@@ -57,6 +62,7 @@ public abstract class Level extends BasicGameState {
 	protected static Image[] ennemies_res;
 	protected static Image[] powerup_res;
 	protected static UnicodeFont[] fonts;
+	protected static Animation flameship;
 	protected Player player;
 	private int ticker;
 	private boolean canshoot;
@@ -142,12 +148,16 @@ public abstract class Level extends BasicGameState {
 		}
 		player_res[0].drawCentered((float)player.getShip().getX(), (float)player.getShip().getY());
 		player_res[player.getShip().getCanon().getID()+2].drawCentered((float)player.getShip().getX()+0.5f, (float)player.getShip().getY()-10);
+		flameship.draw((float) player.getShip().getX()-6, (float) (player.getShip().getY()+27));
 		if (player.getShip().getShield() != null && player.getShip().getShield().isActiv()) {
 			player_res[6].setAlpha(0.5f);
 			player_res[6].drawCentered((float)player.getShip().getX(), (float)player.getShip().getY());
 		}
 		for (int i=0;i<existing_shoot.size();i++) {
 			ressources[1].drawCentered((float)existing_shoot.get(i).getX(), (float)existing_shoot.get(i).getY());
+		}
+		if (player.getPower() != null && player.getPower().isInuse()) {
+			player.getPower().drawme(g);
 		}
 		hud.renderHUD();
 		if (paused) {
@@ -200,10 +210,7 @@ public abstract class Level extends BasicGameState {
 			player.getShip().getCanon().overclock();
 		}
 		if (key == Game.settings.getMap().getPower()/*Keyboard.KEY_4*/ && player.getPower() != null && player.getPower().isAvalaible() && (!player.getPower().isUsed())) {
-			switch (player.getPower().getID()) {
-			default:
-				player.use_power(null);
-			}
+			player.use_power(this);
 		}
 	}
 	
@@ -278,6 +285,9 @@ public abstract class Level extends BasicGameState {
 				screen.update(400, 300);
 				if (!player.getShip().getHitbox().check_collision(screen)) {
 					afterlevel = true;
+					if (player.getPower().isUsed()) {
+						player.getPower().resetuse();
+					}
 				}
 				ticker = 0;
 			}
@@ -295,6 +305,9 @@ public abstract class Level extends BasicGameState {
 				ennemy_col();
 				powerup_col();
 				if (!player.getShip().isAlive()) {
+					if (player.getPower() != null && player.getPower().isInuse()) {
+						player.getPower().stop();
+					}
 					player.lose_life();
 					if (player.isGame_over()) {
 						sbg.enterState(1);
@@ -338,6 +351,9 @@ public abstract class Level extends BasicGameState {
 				} catch (SpawnException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+				if (player.getPower() != null && player.getPower().isInuse()) {
+					player.getPower().update();
 				}
 			}
 		}
@@ -514,12 +530,13 @@ public abstract class Level extends BasicGameState {
 				if (ennemies.get(i).getRhitbox().check_collision(ennemies.get(k).getRhitbox())) {
 					ennemies.get(i).bounce(ennemies.get(i).getRhitbox().angle_tan(ennemies.get(i).getDirection())); 
 					ennemies.get(k).bounce(ennemies.get(k).getRhitbox().angle_tan(ennemies.get(k).getDirection())); 
+					System.out.println(ennemies.get(i).getRhitbox());
 				}
 			}
 			
 			for (int k=0;k<obstacle.size();k++) {
 				if (ennemies.get(i).getHitbox().check_collision(obstacle.get(k).getHitbox())) {
-					ennemies.get(i).bounce(0);
+					ennemies.get(i).bounce(ennemies.get(i).getRhitbox().angle_tan(ennemies.get(i).getDirection()));
 				}
 			}
 			
@@ -594,7 +611,9 @@ public abstract class Level extends BasicGameState {
 			for (int k=0;k<obstacle.size();k++) {
 				if (obstacle.get(k).getHitbox().check_collision_point(existing_shoot.get(i).getX(), existing_shoot.get(i).getY())) {
 					if (obstacle.get(k).isReflect()) {
-						existing_shoot.get(i).bounce(0);//<-----------
+						RoundHitbox rhit = new RoundHitbox(2);
+						rhit.update(existing_shoot.get(i).getX(), existing_shoot.get(i).getY());
+						existing_shoot.get(i).bounce(rhit.angle_tan(existing_shoot.get(i).getDirection()));
 					} else {
 						existing_shoot.get(i).setCollision(true);
 					}
@@ -629,6 +648,9 @@ public abstract class Level extends BasicGameState {
 		case 3:
 			ennemies.add(new Starroll(x, y, hp, this));
 			break;
+		case 4:
+			ennemies.add(new Starshooter(x, y, hp, this));
+			break;
 		default:
 			throw new SpawnException("wrong id of ennemy");
 		}
@@ -659,6 +681,10 @@ public abstract class Level extends BasicGameState {
 		existing_shoot.addElement(ins);
 	}
 	
+	public void removeMob(int index) {
+		ennemies.remove(index);
+	}
+	
 	protected void initScrolling() {
 		for (int i=0;i<obstacle.size();i++) {
 			obstacle.get(i).setGravity(true);
@@ -687,6 +713,14 @@ public abstract class Level extends BasicGameState {
 		return hud;
 	}
 	
+	public boolean isPaused() {
+		return paused;
+	}
+
+	public boolean isFinished() {
+		return finished;
+	}
+
 	//static
 	public static void initRessources() throws SlickException {
 		ressources = new Image[10];
@@ -694,42 +728,64 @@ public abstract class Level extends BasicGameState {
 		ressources[1] = new Image("Pictures/laser.png");
 		ressources[2] = new Image("Pictures/wall.png");
 		ressources[3] = new Image("Pictures/raypower.png");
+		ressources[4] = new Image("Pictures/asteroid.png");
+		ressources[5] = new Image("Pictures/blackhole.png");
+		ressources[6] = new Image("Pictures/blackhole-closed.png");
 		player_res = new Image[7];
 		player_res[0] = new Image("Pictures/ship.png");
 		player_res[1] = new Image("Pictures/rocket.png");
 		player_res[2] = new Image("Pictures/canon.png");
+		player_res[3] = new Image("Pictures/double_canon.png");
+		player_res[4] = new Image("Pictures/triple_canon.png");
+		player_res[5] = new Image("Pictures/quintuple_canon.png");
 		player_res[6] = new Image("Pictures/shield.png");
 		ennemies_res = new Image[10];
 		ennemies_res[0] = new Image("Pictures/starcup.png");
 		ennemies_res[1] = new Image("Pictures/starball.png");
 		ennemies_res[2] = new Image("Pictures/starcupBoss.png");
 		ennemies_res[3] = new Image("Pictures/starroll.png");
-		powerup_res = new Image[10];
+		ennemies_res[4] = new Image("Pictures/starshooter.png");
+		ennemies_res[5] = new Image("Pictures/starshooter_boss.png");
+		powerup_res = new Image[12];
 		powerup_res[0] = new Image("Pictures/burn.png");
 		powerup_res[1] = new Image("Pictures/cd-up.png");
-		powerup_res[2] = ressources[0];
-		powerup_res[3] = ressources[0];
-		powerup_res[4] = ressources[0];
-		powerup_res[5] = ressources[0];
+		powerup_res[2] = new Image("Pictures/energy-up.png");
+		powerup_res[3] = new Image("Pictures/health.png");
+		powerup_res[4] = new Image("Pictures/heat-down.png");
+		powerup_res[5] = ressources[0].copy();
 		powerup_res[6] = new Image("Pictures/money.png");
-		powerup_res[7] = ressources[0];
-		powerup_res[8] = ressources[0];
+		powerup_res[7] = new Image("Pictures/poweritem.png");
+		powerup_res[8] = new Image("Pictures/repair.png");
 		powerup_res[9] = new Image("Pictures/cd-down.png");
+		powerup_res[10] = new Image("Pictures/energy-down.png");
+		powerup_res[11] = new Image("Pictures/heat-up.png");
 		Starcup.init();
+		RayPower.initRaypower();
+		flameship = new Animation(new SpriteSheet("Pictures/flame-ship.png", 12, 21), 33);
+		flameship.setLooping(true);
+		flameship.setAutoUpdate(true);
 		/*******************************************
 		 * Tableau des ressources :
 		 * res 0 			= life indicator
 		 * res 1 			= laser
 		 * res 2 			= wall
 		 * res 3			= ray power
+		 * res 4			= asteroid
+		 * res 5			= blackhole
+		 * res 6			= blackhole closed
 		 * player res 0 	= ship
 		 * player res 1 	= rocket
 		 * player res 2 	= basic canon
-		 * player res 3 	= shield
+		 * player res 3 	= double canon
+		 * player res 4		= triple canon
+		 * player res 5 	= quintuple canon
+		 * player res 6 	= shield
 		 * ennemies res 0 	= UFO ennemy (starcup)
 		 * ennemies res 1 	= Starball
 		 * ennemies res 2	= Starcup boss
 		 * ennemies res 3	= Starroll
+		 * ennemies res 4	= Starshooter
+		 * ennemies res 5 	= Starshooter boss
 		 *******************************************/
 	}
 	

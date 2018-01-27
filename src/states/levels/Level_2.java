@@ -29,7 +29,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import basics.Hitbox;
 import basics.Points;
 import exceptions.SpawnException;
-import gameplay.Wall;
+import gameplay.obstacles.Wall;
 
 public class Level_2 extends Level {
 	private Vector<Points> pregen;
