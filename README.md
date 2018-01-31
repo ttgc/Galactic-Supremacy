@@ -25,10 +25,11 @@ The following list refers to possible upgrade for lite edition
 * Scrolling ✔️
 * Obstacles ✔️
 * Bonus weapons ✔️
-* Score ❌
+* Score ❌ (Replaced with money system)
 * Save system ✔️
 * Difficulties level ✔️
 
 -----------
 
-__**Game is not yet finished, and can have issues, or simply doesn't run properly, please wait release for play it**__
+__**Game is not yet finished, and can have issues, or simply doesn't run properly, please wait release for play it**__<br/>
+__**Release lite-v1.0 is the latest stable version**__
