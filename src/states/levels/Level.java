@@ -226,12 +226,12 @@ public abstract class Level extends BasicGameState {
 		if (input.isKeyDown(Game.settings.getMap().getRight()/*Input.KEY_RIGHT*/) && player.getShip().getX() < 768 && wallcheck(0)) {
 			player.getShip().setX(player.getShip().getX()+Ship.speed);
 		}
-		/*if (input.isKeyDown(Game.settings.getMap().getDown()Input.KEY_DOWN) && player.getShip().getY() < 568 && wallcheck(3)) {
+		if (input.isKeyDown(Game.settings.getMap().getDown()/*Input.KEY_DOWN*/) && player.getShip().getY() < 568 && wallcheck(3)) {
 			player.getShip().setY(player.getShip().getY()+Ship.speed);
 		}
-		if (input.isKeyDown(Game.settings.getMap().getUp()Input.KEY_UP) && player.getShip().getY() > 32 && wallcheck(1)) {
+		if (input.isKeyDown(Game.settings.getMap().getUp()/*Input.KEY_UP*/) && player.getShip().getY() > 32 && wallcheck(1)) {
 			player.getShip().setY(player.getShip().getY()-Ship.speed);
-		}*/
+		}
 		if (input.isKeyDown(Game.settings.getMap().getShoot()/*Input.KEY_SPACE*/) && canshoot && (!player.getShip().getCanon().isOverheat())) {
 			canshoot = false;
 			Shoot[] tirs = player.getShip().getCanon().shoot(player.getShip().getX(),player.getShip().getY());
