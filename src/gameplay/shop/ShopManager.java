@@ -238,6 +238,7 @@ public class ShopManager {
 	public static void import_data() {
 		ShopSave sav = ShopSave.load();
 		if (sav == null) {
+			ShopManager.export_data();
 			return;
 		}
 		bought = sav.getBougth();

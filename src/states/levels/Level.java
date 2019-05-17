@@ -285,7 +285,7 @@ public abstract class Level extends BasicGameState {
 				screen.update(400, 300);
 				if (!player.getShip().getHitbox().check_collision(screen)) {
 					afterlevel = true;
-					if (player.getPower().isUsed()) {
+					if (player.getPower() != null && player.getPower().isUsed()) {
 						player.getPower().resetuse();
 					}
 				}
@@ -530,7 +530,7 @@ public abstract class Level extends BasicGameState {
 				if (ennemies.get(i).getRhitbox().check_collision(ennemies.get(k).getRhitbox())) {
 					ennemies.get(i).bounce(ennemies.get(i).getRhitbox().angle_tan(ennemies.get(i).getDirection())); 
 					ennemies.get(k).bounce(ennemies.get(k).getRhitbox().angle_tan(ennemies.get(k).getDirection())); 
-					System.out.println(ennemies.get(i).getRhitbox());
+					//System.out.println(ennemies.get(i).getRhitbox());
 				}
 			}
 			
