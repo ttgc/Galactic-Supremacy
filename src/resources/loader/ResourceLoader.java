@@ -1,14 +1,16 @@
 package resources.loader;
 
+import java.io.Serializable;
 import java.util.function.Function;
 
 import org.newdawn.slick.SlickException;
 
-public final class ResourceLoader<RESOURCE extends ResourceLoadable, DATA_INIT> {
-	private RESOURCE res;
+public final class ResourceLoader<RESOURCE extends ResourceLoadable, DATA_INIT extends Serializable> implements Serializable {
+	private static final long serialVersionUID = 3857443853268673734L;
+	private transient RESOURCE res;
 	private DATA_INIT data;
 	private Function<DATA_INIT, ResourceLoadable> instantiator;
-	private int refCount = 0;
+	private transient int refCount = 0;
 
 	public ResourceLoader(DATA_INIT data, Function<DATA_INIT, ResourceLoadable> instantiator) {
 		// TODO Auto-generated constructor stub

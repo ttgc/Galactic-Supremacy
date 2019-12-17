@@ -1,7 +1,9 @@
 package resources.loader;
 
-public class FontLoaderData {
+import java.io.Serializable;
 
+public class FontLoaderData implements Serializable {
+	private static final long serialVersionUID = 5541471902795994957L;
 	public String path;
 	public int size;
 	public boolean bold;
