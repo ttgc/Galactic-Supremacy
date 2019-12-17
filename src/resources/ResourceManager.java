@@ -24,7 +24,38 @@ public final class ResourceManager {
 		sounds = new HashMap<String, ResourceLoader<SoundLoadable, String>>();
 		fonts = new HashMap<String, ResourceLoader<FontLoadable, FontLoaderData>>();
 		
-		// TODO load images
+		// load images
+		images.put("life", new ResourceLoader<ImageLoadable, String>("Pictures/life.png", ImageLoadable.getInstantiator()));
+		images.put("laser", new ResourceLoader<ImageLoadable, String>("Pictures/laser.png", ImageLoadable.getInstantiator()));
+		images.put("wall", new ResourceLoader<ImageLoadable, String>("Pictures/wall.png", ImageLoadable.getInstantiator()));
+		images.put("power-ray", new ResourceLoader<ImageLoadable, String>("Pictures/raypower.png", ImageLoadable.getInstantiator()));
+		images.put("asteroid", new ResourceLoader<ImageLoadable, String>("Pictures/asteroid.png", ImageLoadable.getInstantiator()));
+		images.put("blackhole-opened", new ResourceLoader<ImageLoadable, String>("Pictures/blackhole.png", ImageLoadable.getInstantiator()));
+		images.put("blackhole-closed", new ResourceLoader<ImageLoadable, String>("Pictures/blackhole-closed.png", ImageLoadable.getInstantiator()));
+		images.put("ship", new ResourceLoader<ImageLoadable, String>("Pictures/ship.png", ImageLoadable.getInstantiator()));
+		images.put("rocket", new ResourceLoader<ImageLoadable, String>("Pictures/rocket.png", ImageLoadable.getInstantiator()));
+		images.put("canon-basic", new ResourceLoader<ImageLoadable, String>("Pictures/canon.png", ImageLoadable.getInstantiator()));
+		images.put("canon-double", new ResourceLoader<ImageLoadable, String>("Pictures/double_canon.png", ImageLoadable.getInstantiator()));
+		images.put("canon-triple", new ResourceLoader<ImageLoadable, String>("Pictures/triple_canon.png", ImageLoadable.getInstantiator()));
+		images.put("canon-quintuple", new ResourceLoader<ImageLoadable, String>("Pictures/quintuple_canon.png", ImageLoadable.getInstantiator()));
+		images.put("shield", new ResourceLoader<ImageLoadable, String>("Pictures/shield.png", ImageLoadable.getInstantiator()));
+		images.put("starcup", new ResourceLoader<ImageLoadable, String>("Pictures/starcup.png", ImageLoadable.getInstantiator()));
+		images.put("starball", new ResourceLoader<ImageLoadable, String>("Pictures/starball.png", ImageLoadable.getInstantiator()));
+		images.put("boss-starcup", new ResourceLoader<ImageLoadable, String>("Pictures/starcupBoss.png", ImageLoadable.getInstantiator()));
+		images.put("starroll", new ResourceLoader<ImageLoadable, String>("Pictures/starroll.png", ImageLoadable.getInstantiator()));
+		images.put("starshooter", new ResourceLoader<ImageLoadable, String>("Pictures/starshooter.png", ImageLoadable.getInstantiator()));
+		images.put("boss-starshooter", new ResourceLoader<ImageLoadable, String>("Pictures/starshooter_boss.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-burn", new ResourceLoader<ImageLoadable, String>("Pictures/burn.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-cdup", new ResourceLoader<ImageLoadable, String>("Pictures/cd-up.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-energyup", new ResourceLoader<ImageLoadable, String>("Pictures/energy-up.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-health", new ResourceLoader<ImageLoadable, String>("Pictures/health.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-heatdown", new ResourceLoader<ImageLoadable, String>("Pictures/heat-down.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-money", new ResourceLoader<ImageLoadable, String>("Pictures/money.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-power", new ResourceLoader<ImageLoadable, String>("Pictures/poweritem.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-repair", new ResourceLoader<ImageLoadable, String>("Pictures/repair.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-cddown", new ResourceLoader<ImageLoadable, String>("Pictures/cd-down.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-energydown", new ResourceLoader<ImageLoadable, String>("Pictures/energy-down.png", ImageLoadable.getInstantiator()));
+		images.put("powerup-heatup", new ResourceLoader<ImageLoadable, String>("Pictures/heat-up.png", ImageLoadable.getInstantiator()));
 		
 		// load musics
 		musics.put("titlescreen", new ResourceLoader<MusicLoadable, String>("Music/titlescreen.ogg", MusicLoadable.getInstantiator()));
