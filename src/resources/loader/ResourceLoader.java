@@ -39,7 +39,7 @@ public final class ResourceLoader<RESOURCE extends ResourceLoadable, DATA_INIT e
 	}
 	
 	public void unload() {
-		refCount--;
+		if (refCount > 0) refCount--;
 		if (refCount == 0) res = null;
 	}
 	

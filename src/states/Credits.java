@@ -28,7 +28,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
 import main.Game;
-import states.levels.Level;
+import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
+import resources.loader.ResourceLoader;
 
 public class Credits extends BasicGameState {
 	private String[] lines;
@@ -37,6 +40,9 @@ public class Credits extends BasicGameState {
 	private float position;
 	private boolean end;
 	private StateBasedGame sbg;
+	private ResourceLoader<FontLoadable, FontLoaderData> titleFont;
+	private ResourceLoader<FontLoadable, FontLoaderData> dialogFont;
+	private ResourceLoader<FontLoadable, FontLoaderData> basicFont;
 
 	public Credits() {
 		// TODO Auto-generated constructor stub
@@ -52,7 +58,12 @@ public class Credits extends BasicGameState {
 		initLines();
 		end = false;
 		this.sbg = sbg;
-
+		titleFont = ResourceManager.instance.getFonts("title");
+		titleFont.load();
+		dialogFont = ResourceManager.instance.getFonts("dialog");
+		dialogFont.load();
+		basicFont = ResourceManager.instance.getFonts("basic");
+		basicFont.load();
 	}
 
 	@Override
@@ -60,18 +71,18 @@ public class Credits extends BasicGameState {
 		// TODO Auto-generated method stub
 		g.drawImage(back, 0, 0);
 		if (end) {
-			FontUtils.drawCenter(Level.getFonts()[0], "THE END", 0, 292, 800, Color.white);
-			FontUtils.drawCenter(Level.getFonts()[1], "Appuyez sur une touche pour retourner au menu principal", 0, 300+Level.getFonts()[0].getHeight("THE END"), 800, Color.white);
+			FontUtils.drawCenter(titleFont.getRes(), "THE END", 0, 292, 800, Color.white);
+			FontUtils.drawCenter(dialogFont.getRes(), "Appuyez sur une touche pour retourner au menu principal", 0, 300+titleFont.getRes().getHeight("THE END"), 800, Color.white);
 		} else {
-			FontUtils.drawCenter(Level.getFonts()[0], lines[0], 0, (int) position, 800, Color.white);
-			int sum = Level.getFonts()[0].getHeight(lines[0])+128;
+			FontUtils.drawCenter(titleFont.getRes(), lines[0], 0, (int) position, 800, Color.white);
+			int sum = titleFont.getRes().getHeight(lines[0])+128;
 			for (int i=1;i<lines.length;i++) {
 				if (lines[i-1].equals("")) {
 					sum += 64;
 				} else {
-					sum += Level.getFonts()[2].getHeight(lines[i-1]);
+					sum += basicFont.getRes().getHeight(lines[i-1]);
 				}
-				FontUtils.drawCenter(Level.getFonts()[2], lines[i], 0, (int) (position+sum), 800, Color.white);
+				FontUtils.drawCenter(basicFont.getRes(), lines[i], 0, (int) (position+sum), 800, Color.white);
 			}
 			sum += 32;
 			if (position+sum < 0) {
@@ -89,6 +100,9 @@ public class Credits extends BasicGameState {
 			speed = 120;
 		} else {
 			Game.player.save();
+			titleFont.unload();
+			dialogFont.unload();
+			basicFont.unload();
 			sbg.enterState(0);
 		}
 	}

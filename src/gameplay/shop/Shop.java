@@ -43,9 +43,10 @@ import gameplay.player.canon.QuintupleCanon;
 import gameplay.player.canon.TripleCanon;
 import main.Game;
 import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
 import resources.loader.MusicLoadable;
 import resources.loader.ResourceLoader;
-import states.levels.Level;
 
 public class Shop extends BasicGameState {
 	private ShopManager manager;
@@ -54,6 +55,8 @@ public class Shop extends BasicGameState {
 	private Image[] sprites;
 	private StateBasedGame game;
 	private ResourceLoader<MusicLoadable, String> bgm;
+	private ResourceLoader<FontLoadable, FontLoaderData> titleFont;
+	private ResourceLoader<FontLoadable, FontLoaderData> basicFont;
 
 	public Shop() {
 		// TODO Auto-generated constructor stub
@@ -106,7 +109,10 @@ public class Shop extends BasicGameState {
 			bgm = ResourceManager.instance.getMusic("shop");
 			bgm.load().play();
 		}
-
+		titleFont = ResourceManager.instance.getFonts("title");
+		titleFont.load();
+		basicFont = ResourceManager.instance.getFonts("dialog");
+		basicFont.load();
 	}
 
 	@Override
@@ -114,15 +120,15 @@ public class Shop extends BasicGameState {
 		// TODO Auto-generated method stub
 		g.drawImage(back, 0, 0);
 		g.setColor(new Color(255,255,255));
-		g.setFont(Level.getFonts()[1]);
+		g.setFont(basicFont.getRes());
 		g.drawString("POO restants : "+Game.player.getMoney(), 4, 4);
 		g.resetFont();
 		sprites[manager.getID()].drawCentered(400, 300);
-		FontUtils.drawCenter(Level.getFonts()[0], manager.getName(), 0, 128, 800, g.getColor());
-		FontUtils.drawCenter(Level.getFonts()[1], manager.getDescription(), 0, 450, 800, g.getColor());
-		FontUtils.drawCenter(Level.getFonts()[0], manager.getPrice()+" POO", 0, 176, 800, g.getColor());
+		FontUtils.drawCenter(titleFont.getRes(), manager.getName(), 0, 128, 800, g.getColor());
+		FontUtils.drawCenter(basicFont.getRes(), manager.getDescription(), 0, 450, 800, g.getColor());
+		FontUtils.drawCenter(titleFont.getRes(), manager.getPrice()+" POO", 0, 176, 800, g.getColor());
 		button.drawCentered(400, 524);
-		FontUtils.drawCenter(Level.getFonts()[1], "Retour", 0, 518, 800, new Color(0,0,0));
+		FontUtils.drawCenter(basicFont.getRes(), "Retour", 0, 518, 800, new Color(0,0,0));
 		if (manager.isBought() && manager.isOnlyonetime()) {
 			float lw = g.getLineWidth();
 			g.setLineWidth(4);
@@ -284,6 +290,8 @@ public class Shop extends BasicGameState {
 			Game.player.save();
 			bgm.getRes().stop();
 			bgm.unload();
+			titleFont.unload();
+			basicFont.unload();
 			game.enterState(0);
 		}
 	}

@@ -29,9 +29,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import gameplay.MapPath;
 import main.Game;
 import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
 import resources.loader.MusicLoadable;
 import resources.loader.ResourceLoader;
-import states.levels.Level;
 
 public class Worldmap extends BasicGameState {
 	private Image back;
@@ -39,6 +40,7 @@ public class Worldmap extends BasicGameState {
 	private Image ship;
 	private StateBasedGame game;
 	private ResourceLoader<MusicLoadable, String> bgm;
+	private ResourceLoader<FontLoadable, FontLoaderData> font;
 
 	public Worldmap() {
 		// TODO Auto-generated constructor stub
@@ -66,6 +68,7 @@ public class Worldmap extends BasicGameState {
 		if (Game.isInit && !bgm.getRes().playing()) {
 			bgm.getRes().loop();
 		}
+		font = ResourceManager.instance.getFonts("dialog");
 
 	}
 
@@ -74,7 +77,7 @@ public class Worldmap extends BasicGameState {
 		// TODO Auto-generated method stub
 		g.drawImage(back, 0, 0);
 		map.draw(g, new Color(255,255,255), new Color(0,255,0), new Color(255,0,0), ship);
-		g.setFont(Level.getFonts()[1]);
+		g.setFont(font.getRes());
 		g.setColor(new Color(255,255,255));
 		g.drawString("Echap = Menu principal\nEnter = Lancer niveau\nEspace = Garage", 16, 540);
 		g.resetFont();
@@ -89,14 +92,17 @@ public class Worldmap extends BasicGameState {
 			Game.player.save();
 			bgm.getRes().stop();
 			bgm.unload();
+			font.unload();
 			game.enterState(0);
 		} else if (key == Keyboard.KEY_RETURN) {
 			bgm.getRes().stop();
 			bgm.unload();
+			font.unload();
 			game.enterState(10+map.getPosition());
 		} else if (key == Keyboard.KEY_SPACE) {
 			bgm.getRes().stop();
 			bgm.unload();
+			font.unload();
 			game.enterState(6);
 		} else if (key == Keyboard.KEY_UP || key == Keyboard.KEY_RIGHT) {
 			map.forward();

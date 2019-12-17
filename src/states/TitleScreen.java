@@ -30,6 +30,8 @@ import basics.Hitbox;
 import gameplay.ennemies.Ennemy;
 import main.Game;
 import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
 import resources.loader.MusicLoadable;
 import resources.loader.ResourceLoader;
 import states.levels.Level;
@@ -39,6 +41,8 @@ public class TitleScreen extends BasicGameState {
 	private Image button;
 	private StateBasedGame game;
 	private ResourceLoader<MusicLoadable, String> bgm;
+	private ResourceLoader<FontLoadable, FontLoaderData> titleFont;
+	private ResourceLoader<FontLoadable, FontLoaderData> basicFont;
 	//private HUD hud;
 
 	public TitleScreen() {
@@ -49,7 +53,6 @@ public class TitleScreen extends BasicGameState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		// TODO Auto-generated method stub
 		Level.initRessources();
-		Level.initFont();
 		Ennemy.initHitbox();
 		if (!Game.isInit) {
 			Game.initMusicSystem(gc);
@@ -59,6 +62,10 @@ public class TitleScreen extends BasicGameState {
 		game = sbg;
 		bgm = ResourceManager.instance.getMusic("titlescreen");
 		bgm.load().loop();
+		titleFont = ResourceManager.instance.getFonts("title");
+		titleFont.load();
+		basicFont = ResourceManager.instance.getFonts("dialog");
+		basicFont.load();
 		
 		//testing
 		//Game.player.earnmoney(9999999);
@@ -74,13 +81,13 @@ public class TitleScreen extends BasicGameState {
 		g.setBackground(new Color(255,255,255));
 		g.drawImage(back, 0, 0);
 		g.setColor(new Color(255,255,255));
-		FontUtils.drawCenter(Level.getFonts()[0], "Galactic Supremacy", 0, 16, 800, g.getColor());
+		FontUtils.drawCenter(titleFont.getRes(), "Galactic Supremacy", 0, 16, 800, g.getColor());
 		int nbr_button = 4;
 		float auto_height = 500.f/((float)nbr_button);
 		String[] buttons_text = {"Jouer","Boutique","Parametres","Quitter"};
 		for (int i=0;i<nbr_button;i++) {
 			button.drawCentered(400, 48+auto_height*i+(auto_height/2.f));
-			FontUtils.drawCenter(Level.getFonts()[1], buttons_text[i], 0, (int)(48+auto_height*i+(auto_height/2.f)-6), 800, new Color(0,0,0));
+			FontUtils.drawCenter(basicFont.getRes(), buttons_text[i], 0, (int)(48+auto_height*i+(auto_height/2.f)-6), 800, new Color(0,0,0));
 		}
 		g.resetFont();
 		FontUtils.drawCenter(g.getFont(), "Copyright (c) 2017, 2018 PIOT Thomas", 0, 568, 800, g.getColor());
@@ -119,18 +126,24 @@ public class TitleScreen extends BasicGameState {
 					//jouer
 					bgm.getRes().stop();
 					bgm.unload();
+					titleFont.unload();
+					basicFont.unload();
 					game.enterState(4);
 					break;
 				case 1:
 					//boutique
 					bgm.getRes().stop();
 					bgm.unload();
+					titleFont.unload();
+					basicFont.unload();
 					game.enterState(3);
 					break;
 				case 2:
 					//settings
 					bgm.getRes().stop();
 					bgm.unload();
+					titleFont.unload();
+					basicFont.unload();
 					game.enterState(2);
 					break;
 				case 3:
@@ -138,6 +151,8 @@ public class TitleScreen extends BasicGameState {
 					Game.player.save();
 					bgm.getRes().stop();
 					bgm.unload();
+					titleFont.unload();
+					basicFont.unload();
 					System.exit(0);
 					break;
 				}

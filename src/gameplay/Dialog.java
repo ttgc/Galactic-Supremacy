@@ -22,8 +22,12 @@ import java.util.Vector;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 
-import states.levels.Level;
+import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
+import resources.loader.ResourceLoader;
 
 public class Dialog {
 	private Vector<String> msg;
@@ -31,6 +35,7 @@ public class Dialog {
 	private int position;
 	private int time;
 	private boolean started;
+	private ResourceLoader<FontLoadable, FontLoaderData> font;
 
 	public Dialog() {
 		// TODO Auto-generated constructor stub
@@ -39,14 +44,17 @@ public class Dialog {
 		position = 0;
 		time = 0;
 		started = false;
+		font = ResourceManager.instance.getFonts("dialog");
 	}
 	
-	public void start() {
+	public void start() throws SlickException {
+		font.load();
 		started = true;
 		time = 0;
 	}
 	
 	public void stop() {
+		font.unload();
 		started = false;
 	}
 	
@@ -54,7 +62,7 @@ public class Dialog {
 		position = 0;
 	}
 	
-	public void restart() {
+	public void restart() throws SlickException {
 		position = 0;
 		start();
 	}
@@ -68,7 +76,7 @@ public class Dialog {
 		g.setColor(new Color(0,0,0,0.7f));
 		g.fillRect(0, 472, 800, 128);
 		g.setColor(new Color(255,255,255));
-		g.setFont(Level.getFonts()[1]);
+		g.setFont(font.getRes());
 		g.drawString(msg.get(position), 4, 476);
 		g.setColor(old);
 		g.setFont(oldf);

@@ -12,14 +12,17 @@ import org.newdawn.slick.util.FontUtils;
 
 import main.Game;
 import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
 import resources.loader.MusicLoadable;
 import resources.loader.ResourceLoader;
-import states.levels.Level;
 
 public class LoadingScreen extends BasicGameState {
 	private Image[] keys;
 	private StateBasedGame game;
 	private ResourceLoader<MusicLoadable, String> bgm;
+	private ResourceLoader<FontLoadable, FontLoaderData> titleFont;
+	private ResourceLoader<FontLoadable, FontLoaderData> basicFont;
 
 	public LoadingScreen() {
 		// TODO Auto-generated constructor stub
@@ -40,6 +43,10 @@ public class LoadingScreen extends BasicGameState {
 			bgm = ResourceManager.instance.getMusic("mapmonde");
 			bgm.load().loop();
 		}
+		titleFont = ResourceManager.instance.getFonts("title");
+		titleFont.load();
+		basicFont = ResourceManager.instance.getFonts("dialog");
+		basicFont.load();
 				
 	}
 
@@ -48,8 +55,8 @@ public class LoadingScreen extends BasicGameState {
 		// TODO Auto-generated method stub
 		g.setBackground(new Color(0,0,0));
 		g.setColor(new Color(255,255,255));
-		FontUtils.drawCenter(Level.getFonts()[0], "Commandes", 0, 32, 800, g.getColor());
-		g.setFont(Level.getFonts()[1]);
+		FontUtils.drawCenter(titleFont.getRes(), "Commandes", 0, 32, 800, g.getColor());
+		g.setFont(basicFont.getRes());
 		//48 h = touche normale + espace
 		//96 h = directionnelles
 		g.drawImage(keys[0], 32, 96);
@@ -65,7 +72,7 @@ public class LoadingScreen extends BasicGameState {
 		g.drawImage(keys[5], 32, 464);
 		g.drawString("Super pouvoir", 400, 482);
 		g.resetFont();
-		FontUtils.drawCenter(Level.getFonts()[1], "Appuyez sur une touche pour continuer", 0, 548, 800, g.getColor());
+		FontUtils.drawCenter(basicFont.getRes(), "Appuyez sur une touche pour continuer", 0, 548, 800, g.getColor());
 
 	}
 	
@@ -73,6 +80,8 @@ public class LoadingScreen extends BasicGameState {
 	public void keyPressed(int key, char c) {
 		// TODO Auto-generated method stub
 		super.keyPressed(key, c);
+		titleFont.unload();
+		basicFont.unload();
 		game.enterState(5);
 	}
 

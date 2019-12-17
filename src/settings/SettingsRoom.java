@@ -34,9 +34,10 @@ import basics.Hitbox;
 import basics.Jauge;
 import main.Game;
 import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
 import resources.loader.MusicLoadable;
 import resources.loader.ResourceLoader;
-import states.levels.Level;
 
 
 public class SettingsRoom extends BasicGameState {
@@ -49,6 +50,8 @@ public class SettingsRoom extends BasicGameState {
 	private Jauge sjauge;
 	private KeyType activkey;
 	private ResourceLoader<MusicLoadable, String> bgm;
+	private ResourceLoader<FontLoadable, FontLoaderData> titleFont;
+	private ResourceLoader<FontLoadable, FontLoaderData> basicFont;
 
 	public SettingsRoom() {
 		// TODO Auto-generated constructor stub
@@ -72,7 +75,10 @@ public class SettingsRoom extends BasicGameState {
 			bgm = ResourceManager.instance.getMusic("settings");
 			bgm.load().loop();
 		}
-
+		titleFont = ResourceManager.instance.getFonts("title");
+		titleFont.load();
+		basicFont = ResourceManager.instance.getFonts("dialog");
+		basicFont.load();
 	}
 
 	@Override
@@ -81,7 +87,7 @@ public class SettingsRoom extends BasicGameState {
 		// TODO Auto-generated method stub
 		g.drawImage(back, 0, 0);
 		g.setColor(new Color(255,255,255));
-		FontUtils.drawCenter(Level.getFonts()[0], "Parametres", 0, 32, 800, g.getColor());
+		FontUtils.drawCenter(titleFont.getRes(), "Parametres", 0, 32, 800, g.getColor());
 
 		if (affichage.equals(SettingsType.General)) {
 			int nbr_options = 5;
@@ -89,7 +95,7 @@ public class SettingsRoom extends BasicGameState {
 			String[] labels = {"Fullscreen","Affichage minimal","Changement auto canon","Rendre muet la musique","Rendre muet les bruitages"};
 			boolean[] cheker = {settings.isFullscreen(),settings.isMinimal_hud(),settings.isAuto_swap(),settings.isMusic_mute(),settings.isSound_mute()};
 			for (int i=0;i<nbr_options;i++) {
-				FontUtils.drawCenter(Level.getFonts()[1], labels[i], 0, (int) (100+(i+1)*(height_auto/2)-6), 600);
+				FontUtils.drawCenter(basicFont.getRes(), labels[i], 0, (int) (100+(i+1)*(height_auto/2)-6), 600);
 				g.fillRect(690, 100+(i+1)*(height_auto/2), 20, 20);
 				g.setColor(new Color(0,0,0));
 				g.drawRect(690, 100+i*(height_auto/2), 20, 20);
@@ -108,30 +114,30 @@ public class SettingsRoom extends BasicGameState {
 			g.drawImage(button, 64, posy_min+button.getHeight()+32);
 			g.drawImage(button, 64+button.getWidth()+inter, posy_min+button.getHeight()+32);
 			g.setColor(new Color(0,0,0));
-			FontUtils.drawCenter(Level.getFonts()[1], "Changer volumes", 64, (int) (posy_min+button.getHeight()/2), button.getWidth(), g.getColor());
-			FontUtils.drawCenter(Level.getFonts()[1], "Reglage des touches", (int) (64+button.getWidth()+inter), (int) (posy_min+button.getHeight()/2), button.getWidth(), g.getColor());
-			FontUtils.drawCenter(Level.getFonts()[1], "Retour", 64, (int) (posy_min+button.getHeight()/2)+button.getHeight()+32, button.getWidth(), g.getColor());
-			FontUtils.drawCenter(Level.getFonts()[1], "Par defaut", (int) (64+button.getWidth()+inter), (int) (posy_min+button.getHeight()/2)+button.getHeight()+32, button.getWidth(), g.getColor());
+			FontUtils.drawCenter(basicFont.getRes(), "Changer volumes", 64, (int) (posy_min+button.getHeight()/2), button.getWidth(), g.getColor());
+			FontUtils.drawCenter(basicFont.getRes(), "Reglage des touches", (int) (64+button.getWidth()+inter), (int) (posy_min+button.getHeight()/2), button.getWidth(), g.getColor());
+			FontUtils.drawCenter(basicFont.getRes(), "Retour", 64, (int) (posy_min+button.getHeight()/2)+button.getHeight()+32, button.getWidth(), g.getColor());
+			FontUtils.drawCenter(basicFont.getRes(), "Par defaut", (int) (64+button.getWidth()+inter), (int) (posy_min+button.getHeight()/2)+button.getHeight()+32, button.getWidth(), g.getColor());
 		}
 		
 		if (affichage.equals(SettingsType.Volume)) {
-			FontUtils.drawCenter(Level.getFonts()[1], "Musique", 0, 175, 800, Color.white);
+			FontUtils.drawCenter(basicFont.getRes(), "Musique", 0, 175, 800, Color.white);
 			vjauge.draw();
-			FontUtils.drawCenter(Level.getFonts()[1], "Bruitages", 0, 375, 800, Color.white);
+			FontUtils.drawCenter(basicFont.getRes(), "Bruitages", 0, 375, 800, Color.white);
 			sjauge.draw();
 			button.drawCentered(400, 500);
-			FontUtils.drawCenter(Level.getFonts()[1], "Valider", 400-button.getWidth()/2, 496, button.getWidth(), Color.black);
+			FontUtils.drawCenter(basicFont.getRes(), "Valider", 400-button.getWidth()/2, 496, button.getWidth(), Color.black);
 		}
 		
 		if (affichage.equals(SettingsType.Keymapping)) {
 			button.drawCentered(400, 500);
-			FontUtils.drawCenter(Level.getFonts()[1], "Valider", 400-button.getWidth()/2, 496, button.getWidth(), Color.black);
+			FontUtils.drawCenter(basicFont.getRes(), "Valider", 400-button.getWidth()/2, 496, button.getWidth(), Color.black);
 			int nbrkey = 10;
 			String[] namesL = {"Gauche","Droite","Haut","Bas","Tirer"};
 			String[] namesR = {"Missiles","Bouclier","Overclock","Pouvoir","Pause"};
 			int[] keysL = {settings.getMap().getLeft(),settings.getMap().getRight(),settings.getMap().getUp(),settings.getMap().getDown(),settings.getMap().getShoot()};
 			int[] keysR = {settings.getMap().getRocket(),settings.getMap().getShield(),settings.getMap().getOverclock(),settings.getMap().getPower(),settings.getMap().getPause()};
-			g.setFont(Level.getFonts()[1]);
+			g.setFont(basicFont.getRes());
 			for (int i=0;i<nbrkey/2;i++) {
 				g.setColor(Color.white);
 				g.drawString(namesL[i]+" :", 16, 128+(i*64)+18);
@@ -217,6 +223,8 @@ public class SettingsRoom extends BasicGameState {
 				settings.save();
 				bgm.getRes().stop();
 				bgm.unload();
+				titleFont.unload();
+				basicFont.unload();
 				game.enterState(0);
 			}
 			click_zone.update((64+this.button.getWidth())+(this.button.getWidth()/2)+inter, posy_min+this.button.getHeight()/2+this.button.getHeight()+32);

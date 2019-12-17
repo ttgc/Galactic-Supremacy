@@ -93,13 +93,13 @@ public class Level_5 extends Level {
 		if (activatepower && !haspower && !dial.isStarted()) {
 			switch(spchose) {
 			case 0:
-				FontUtils.drawCenter(Level.fonts[0], "Wave Power", 0, 396, 800, Color.white);
+				FontUtils.drawCenter(font.getRes(), "Wave Power", 0, 396, 800, Color.white);
 				break;
 			case 1:
-				FontUtils.drawCenter(Level.fonts[0], "Ray Power", 0, 396, 800, Color.white);
+				FontUtils.drawCenter(font.getRes(), "Ray Power", 0, 396, 800, Color.white);
 				break;
 			}
-			FontUtils.drawCenter(Level.fonts[1], "Utiliser les fleches pour changer et entrer pour valider", 0, 450, 800, Color.white);
+			FontUtils.drawCenter(endFont.getRes(), "Utiliser les fleches pour changer et entrer pour valider", 0, 450, 800, Color.white);
 		}
 	}
 	
@@ -108,6 +108,7 @@ public class Level_5 extends Level {
 		// TODO Auto-generated method stub
 		if (view == 3072 && !activatepower) {
 			dial.start();
+			endFont.load();
 			activatepower = true;
 			return;
 		}
@@ -143,6 +144,7 @@ public class Level_5 extends Level {
 			}
 			if (haspower) {
 				powerup.add(new PowerupPower(400, 32));
+				endFont.unload();
 			}
 			return;
 		}

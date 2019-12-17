@@ -26,11 +26,15 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
 import main.Game;
-import states.levels.Level;
+import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
+import resources.loader.ResourceLoader;
 
 public class GameOverScreen extends BasicGameState {
 	private int timemin;
 	private boolean reset;
+	private ResourceLoader<FontLoadable, FontLoaderData> titleFont;
 
 	public GameOverScreen() {
 		// TODO Auto-generated constructor stub
@@ -41,7 +45,8 @@ public class GameOverScreen extends BasicGameState {
 		// TODO Auto-generated method stub
 		timemin = 0;
 		reset = false;
-
+		titleFont = ResourceManager.instance.getFonts("title");
+		titleFont.load();
 	}
 
 	@Override
@@ -49,7 +54,7 @@ public class GameOverScreen extends BasicGameState {
 		// TODO Auto-generated method stub
 		g.setBackground(new Color(0, 0, 0));
 		//g.setColor(new Color(255, 255, 255));
-		FontUtils.drawCenter(Level.getFonts()[0], "GAME OVER", 0, 290, 800, new Color(255,255,255));
+		FontUtils.drawCenter(titleFont.getRes(), "GAME OVER", 0, 290, 800, new Color(255,255,255));
 		//g.drawString("GAME OVER", 360, 290);
 
 	}
@@ -76,6 +81,7 @@ public class GameOverScreen extends BasicGameState {
 		timemin += delta;
 		if (reset) {
 			Game.player.resurect();
+			titleFont.unload();
 			sbg.enterState(0);
 		}
 		

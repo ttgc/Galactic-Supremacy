@@ -31,8 +31,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
@@ -55,6 +53,8 @@ import gameplay.player.superpower.RayPower;
 import gameplay.powerup.Powerup;
 import main.Game;
 import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
 import resources.loader.MusicLoadable;
 import resources.loader.ResourceLoader;
 
@@ -64,7 +64,6 @@ public abstract class Level extends BasicGameState {
 	protected static Image[] player_res;
 	protected static Image[] ennemies_res;
 	protected static Image[] powerup_res;
-	protected static UnicodeFont[] fonts;
 	protected static Animation flameship;
 	protected Player player;
 	private int ticker;
@@ -88,6 +87,8 @@ public abstract class Level extends BasicGameState {
 	private boolean afterlevel;
 	private StateBasedGame sbgsave;
 	private ResourceLoader<MusicLoadable, String> bgm;
+	protected ResourceLoader<FontLoadable, FontLoaderData> font;
+	protected ResourceLoader<FontLoadable, FontLoaderData> endFont;
 	
 	public Level() {
 		// TODO Auto-generated constructor stub
@@ -131,7 +132,9 @@ public abstract class Level extends BasicGameState {
 			if (!bgm.isLoaded()) bgm.load();
 			bgm.getRes().loop();
 		}
-		
+		font = ResourceManager.instance.getFonts("title");
+		if (!font.isLoaded()) font.load();
+		endFont = ResourceManager.instance.getFonts("dialog");
 	}
 
 	@Override
@@ -167,16 +170,16 @@ public abstract class Level extends BasicGameState {
 		}
 		hud.renderHUD();
 		if (paused) {
-			FontUtils.drawCenter(fonts[0], "PAUSE", 0, 220, 800, new Color(255,255,255));
-			FontUtils.drawCenter(fonts[0], "=========", 0, 225+fonts[0].getHeight("PAUSE"), 800, new Color(255,255,255));
-			FontUtils.drawCenter(fonts[0], "ESC = Reprendre", 0, 230+(fonts[0].getHeight("PAUSE")+fonts[0].getHeight("ESC = Reprendre")), 800, new Color(255,255,255));
-			FontUtils.drawCenter(fonts[0], "F2 = Retour au menu", 0, 235+(fonts[0].getHeight("PAUSE")+fonts[0].getHeight("ESC = Reprendre")+fonts[0].getHeight("F1 = Aide")), 800, new Color(255,255,255));
+			FontUtils.drawCenter(font.getRes(), "PAUSE", 0, 220, 800, new Color(255,255,255));
+			FontUtils.drawCenter(font.getRes(), "=========", 0, 225+font.getRes().getHeight("PAUSE"), 800, new Color(255,255,255));
+			FontUtils.drawCenter(font.getRes(), "ESC = Reprendre", 0, 230+(font.getRes().getHeight("PAUSE")+font.getRes().getHeight("ESC = Reprendre")), 800, new Color(255,255,255));
+			FontUtils.drawCenter(font.getRes(), "F2 = Retour au menu", 0, 235+(font.getRes().getHeight("PAUSE")+font.getRes().getHeight("ESC = Reprendre")+font.getRes().getHeight("F1 = Aide")), 800, new Color(255,255,255));
 		}
 		
 		if (afterlevel) {
-			FontUtils.drawCenter(fonts[0], "NIVEAU TERMINE", 0, 220, 800, new Color(255,255,255));
-			FontUtils.drawCenter(fonts[0], "=========", 0, 225+fonts[0].getHeight("NIVEAU TERMINE"), 800, new Color(255,255,255));
-			FontUtils.drawCenter(fonts[1], "Appuyez sur une touche pour continuer", 0, 230+(fonts[0].getHeight("NIVEAU TERMINE")+fonts[0].getHeight("Appuyez sur une touche pour continuer")), 800, new Color(255,255,255));
+			FontUtils.drawCenter(font.getRes(), "NIVEAU TERMINE", 0, 220, 800, new Color(255,255,255));
+			FontUtils.drawCenter(font.getRes(), "=========", 0, 225+font.getRes().getHeight("NIVEAU TERMINE"), 800, new Color(255,255,255));
+			FontUtils.drawCenter(endFont.getRes(), "Appuyez sur une touche pour continuer", 0, 230+(font.getRes().getHeight("NIVEAU TERMINE")+font.getRes().getHeight("Appuyez sur une touche pour continuer")), 800, new Color(255,255,255));
 		}
 	}
 	
@@ -262,8 +265,7 @@ public abstract class Level extends BasicGameState {
 			result = JOptionPane.showConfirmDialog(frame, "Retourner au menu principal ?\nVotre progression actuelle sera perdue", "Retourner au menu ?", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				player.getShip().fullheal();
-				bgm.getRes().stop();
-				bgm.unload();
+				unloadResources();
 				sbg.enterState(0);
 			}
 			if (Game.settings.isFullscreen()) {
@@ -318,8 +320,7 @@ public abstract class Level extends BasicGameState {
 					}
 					player.lose_life();
 					if (player.isGame_over()) {
-						bgm.getRes().stop();
-						bgm.unload();
+						unloadResources();
 						sbg.enterState(1);
 					} else {
 						sbg.enterState(sbg.getCurrentStateID());
@@ -446,8 +447,7 @@ public abstract class Level extends BasicGameState {
 					e.printStackTrace();
 				}
 			}
-			bgm.getRes().stop();
-			bgm.unload();
+			unloadResources();
 			sbg.enterState(6);
 		}
 	}
@@ -459,8 +459,7 @@ public abstract class Level extends BasicGameState {
 			//sortie d'écran totale
 			player.lose_life();
 			if (player.isGame_over()) {
-				bgm.getRes().stop();
-				bgm.unload();
+				unloadResources();
 				sbg.enterState(1);
 			} else {
 				sbg.enterState(sbg.getCurrentStateID());
@@ -679,14 +678,20 @@ public abstract class Level extends BasicGameState {
 		existing_shoot.clear();
 		ennemies.clear();
 		powerup.clear();
+		try {
+			endFont.load();
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			endFont = font;
+		}
 	}
 	
 	private void endlevel() {
 		if (player.getLevel() == getID()-9) {
 			player.setLevel(player.getLevel()+1);
 		}
-		bgm.getRes().stop();
-		bgm.unload();
+		unloadResources();
 		sbgsave.enterState(5);
 		player.earnmoney(100*(getID()-9));
 		player.getShip().fullheal();
@@ -708,6 +713,13 @@ public abstract class Level extends BasicGameState {
 	}
 	
 	protected abstract void initObstacle();
+	
+	protected void unloadResources() {
+		bgm.getRes().stop();
+		bgm.unload();
+		font.unload();
+		endFont.unload();
+	}
 	
 	public Vector<Shoot> getExisting_shoot() {
 		return existing_shoot;
@@ -804,24 +816,6 @@ public abstract class Level extends BasicGameState {
 		 * ennemies res 5 	= Starshooter boss
 		 *******************************************/
 	}
-	
-	@SuppressWarnings("unchecked")
-	public static void initFont() throws SlickException {
-		fonts = new UnicodeFont[3];
-		ColorEffect a = new ColorEffect();
-		
-		String[] list = {"Font/spaceboy.ttf","Font/spaceboy.ttf","Font/spacebit.ttf"};
-		int[] size = {32,14,32};
-		boolean[] bold = {false,false,true};
-		boolean[] italic = {false,false,false};
-		
-		for (int i=0;i<fonts.length;i++) {
-			fonts[i] = new UnicodeFont(list[i],size[i],bold[i],italic[i]);
-			fonts[i].addAsciiGlyphs();
-			fonts[i].getEffects().add(a);
-			fonts[i].loadGlyphs();
-		}
-	}
 
 	public static Image[] getRessources() {
 		return ressources;
@@ -837,10 +831,6 @@ public abstract class Level extends BasicGameState {
 
 	public static Image[] getPowerup_res() {
 		return powerup_res;
-	}
-
-	public static UnicodeFont[] getFonts() {
-		return fonts;
 	}
 
 }

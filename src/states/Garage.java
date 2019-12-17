@@ -33,6 +33,8 @@ import basics.Jauge;
 import gameplay.player.canon.BasicCanon;
 import main.Game;
 import resources.ResourceManager;
+import resources.loader.FontLoadable;
+import resources.loader.FontLoaderData;
 import resources.loader.MusicLoadable;
 import resources.loader.ResourceLoader;
 import states.levels.Level;
@@ -45,6 +47,8 @@ public class Garage extends BasicGameState {
 	private StateBasedGame sbg;
 	private Image button;
 	private ResourceLoader<MusicLoadable, String> bgm;
+	private ResourceLoader<FontLoadable, FontLoaderData> titleFont;
+	private ResourceLoader<FontLoadable, FontLoaderData> basicFont;
 
 	public Garage() {
 		// TODO Auto-generated constructor stub
@@ -75,20 +79,24 @@ public class Garage extends BasicGameState {
 			bgm = ResourceManager.instance.getMusic("garage");
 			bgm.load().loop();
 		}
+		titleFont = ResourceManager.instance.getFonts("title");
+		titleFont.load();
+		basicFont = ResourceManager.instance.getFonts("dialog");
+		basicFont.load();
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		// TODO Auto-generated method stub
 		g.drawImage(back, 0, 0);
-		FontUtils.drawCenter(Level.getFonts()[0], "GARAGE", 0, 32, 800, new Color(255,255,255));
-		g.setFont(Level.getFonts()[1]);
+		FontUtils.drawCenter(titleFont.getRes(), "GARAGE", 0, 32, 800, new Color(255,255,255));
+		g.setFont(basicFont.getRes());
 		g.setColor(new Color(255,255,255));
 		g.drawString("ESC = Retour", 4, 4);
 		Level.getPlayer_res()[0].drawCentered(400, 300);
 		Level.getPlayer_res()[Game.player.getShip().getCanon().getID()+2].drawCentered(400+0.5f, (float)300-10);
-		FontUtils.drawCenter(Level.getFonts()[0], "Canon", 0, 132, 800, Color.white);
-		FontUtils.drawCenter(Level.getFonts()[0], "Shield", 0, 432, 800, Color.white);
+		FontUtils.drawCenter(titleFont.getRes(), "Canon", 0, 132, 800, Color.white);
+		FontUtils.drawCenter(titleFont.getRes(), "Shield", 0, 432, 800, Color.white);
 		if (Game.player.getShip().getShield() != null) {
 			Level.getPlayer_res()[6].setAlpha(0.3f);
 			Level.getPlayer_res()[6].drawCentered(400, 300);
@@ -96,7 +104,7 @@ public class Garage extends BasicGameState {
 		durab.draw();
 		g.setColor(new Color(255,255,255,0.3f));
 		g.fillRect(0, 376, 224, 224);
-		g.setFont(Level.getFonts()[1]);
+		g.setFont(basicFont.getRes());
 		g.setColor(new Color(0,0,0));
 		String cname = Game.player.getShip().getCanon().getClass().getSimpleName();
 		cname = cname.replace("Canon", "");
@@ -130,7 +138,7 @@ public class Garage extends BasicGameState {
 		tri.setY(150);
 		g.fill(tri);
 		g.drawImage(button, 800-button.getWidth(), 600-button.getHeight());
-		FontUtils.drawCenter(Level.getFonts()[1], "Recharger rockets", 800-button.getWidth(), 594-(button.getHeight()/2), button.getWidth(), new Color(0,0,0));
+		FontUtils.drawCenter(basicFont.getRes(), "Recharger rockets", 800-button.getWidth(), 594-(button.getHeight()/2), button.getWidth(), new Color(0,0,0));
 
 	}
 	
@@ -214,6 +222,8 @@ public class Garage extends BasicGameState {
 			Game.player.save();
 			bgm.getRes().stop();
 			bgm.unload();
+			titleFont.unload();
+			basicFont.unload();
 			sbg.enterState(5);
 		}
 	}
