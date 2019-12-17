@@ -68,6 +68,11 @@ public class BlackHole {
 		}
 	}
 	
+	public void update(int delta) {
+		y++;
+		hitbox.update(x, y);
+	}
+	
 	public void linkto(BlackHole link, boolean bidirectional) {
 		this.link = link;
 		link.link = this;
