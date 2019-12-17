@@ -32,6 +32,9 @@ import basics.Hitbox;
 import basics.Jauge;
 import gameplay.player.canon.BasicCanon;
 import main.Game;
+import resources.ResourceManager;
+import resources.loader.MusicLoadable;
+import resources.loader.ResourceLoader;
 import states.levels.Level;
 
 public class Garage extends BasicGameState {
@@ -41,6 +44,7 @@ public class Garage extends BasicGameState {
 	private int indexs;
 	private StateBasedGame sbg;
 	private Image button;
+	private ResourceLoader<MusicLoadable, String> bgm;
 
 	public Garage() {
 		// TODO Auto-generated constructor stub
@@ -68,7 +72,8 @@ public class Garage extends BasicGameState {
 		this.sbg = sbg;
 		button = new Image("Pictures/button.png");
 		if (Game.isInit) {
-			Game.music[5].loop();
+			bgm = ResourceManager.instance.getMusic("garage");
+			bgm.load().loop();
 		}
 	}
 
@@ -207,6 +212,8 @@ public class Garage extends BasicGameState {
 		super.keyPressed(key, c);
 		if (key == Keyboard.KEY_ESCAPE) {
 			Game.player.save();
+			bgm.getRes().stop();
+			bgm.unload();
 			sbg.enterState(5);
 		}
 	}

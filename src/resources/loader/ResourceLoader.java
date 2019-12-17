@@ -47,5 +47,9 @@ public final class ResourceLoader<RESOURCE extends ResourceLoadable, DATA_INIT e
 		refCount = 0;
 		res = null;
 	}
+	
+	public boolean isLoaded() {
+		return (res != null);
+	}
 
 }

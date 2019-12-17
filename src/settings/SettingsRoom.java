@@ -33,6 +33,9 @@ import org.newdawn.slick.util.FontUtils;
 import basics.Hitbox;
 import basics.Jauge;
 import main.Game;
+import resources.ResourceManager;
+import resources.loader.MusicLoadable;
+import resources.loader.ResourceLoader;
 import states.levels.Level;
 
 
@@ -45,6 +48,7 @@ public class SettingsRoom extends BasicGameState {
 	private Jauge vjauge;
 	private Jauge sjauge;
 	private KeyType activkey;
+	private ResourceLoader<MusicLoadable, String> bgm;
 
 	public SettingsRoom() {
 		// TODO Auto-generated constructor stub
@@ -65,7 +69,8 @@ public class SettingsRoom extends BasicGameState {
 		sjauge.setVmax(100);
 		activkey = null;
 		if (Game.isInit) {
-			Game.music[3].loop();
+			bgm = ResourceManager.instance.getMusic("settings");
+			bgm.load().loop();
 		}
 
 	}
@@ -210,6 +215,8 @@ public class SettingsRoom extends BasicGameState {
 			click_zone.update(64+this.button.getWidth()/2, posy_min+this.button.getHeight()/2+this.button.getHeight()+32);
 			if (click_zone.check_collision_point(x, y)) {
 				settings.save();
+				bgm.getRes().stop();
+				bgm.unload();
 				game.enterState(0);
 			}
 			click_zone.update((64+this.button.getWidth())+(this.button.getWidth()/2)+inter, posy_min+this.button.getHeight()/2+this.button.getHeight()+32);

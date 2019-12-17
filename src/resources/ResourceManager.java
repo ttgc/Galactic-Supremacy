@@ -10,7 +10,7 @@ import resources.loader.ResourceLoader;
 import resources.loader.SoundLoadable;
 
 public final class ResourceManager {
-	public final ResourceManager instance = new ResourceManager();
+	public static final ResourceManager instance = new ResourceManager();
 	
 	private HashMap<String, ResourceLoader<ImageLoadable, String>> images;
 	private HashMap<String, ResourceLoader<MusicLoadable, String>> musics;

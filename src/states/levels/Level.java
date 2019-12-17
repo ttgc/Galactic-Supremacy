@@ -54,6 +54,9 @@ import gameplay.player.Ship;
 import gameplay.player.superpower.RayPower;
 import gameplay.powerup.Powerup;
 import main.Game;
+import resources.ResourceManager;
+import resources.loader.MusicLoadable;
+import resources.loader.ResourceLoader;
 
 
 public abstract class Level extends BasicGameState {
@@ -84,6 +87,7 @@ public abstract class Level extends BasicGameState {
 	private boolean finished;
 	private boolean afterlevel;
 	private StateBasedGame sbgsave;
+	private ResourceLoader<MusicLoadable, String> bgm;
 	
 	public Level() {
 		// TODO Auto-generated constructor stub
@@ -122,8 +126,10 @@ public abstract class Level extends BasicGameState {
 		player.getShip().getCanon().reload();
 		initObstacle();
 		initScrolling();
+		bgm = ResourceManager.instance.getMusic("battle");
 		if (Game.isInit) {
-			Game.music[1].loop();
+			if (!bgm.isLoaded()) bgm.load();
+			bgm.getRes().loop();
 		}
 		
 	}
@@ -256,6 +262,8 @@ public abstract class Level extends BasicGameState {
 			result = JOptionPane.showConfirmDialog(frame, "Retourner au menu principal ?\nVotre progression actuelle sera perdue", "Retourner au menu ?", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				player.getShip().fullheal();
+				bgm.getRes().stop();
+				bgm.unload();
 				sbg.enterState(0);
 			}
 			if (Game.settings.isFullscreen()) {
@@ -310,6 +318,8 @@ public abstract class Level extends BasicGameState {
 					}
 					player.lose_life();
 					if (player.isGame_over()) {
+						bgm.getRes().stop();
+						bgm.unload();
 						sbg.enterState(1);
 					} else {
 						sbg.enterState(sbg.getCurrentStateID());
@@ -436,6 +446,8 @@ public abstract class Level extends BasicGameState {
 					e.printStackTrace();
 				}
 			}
+			bgm.getRes().stop();
+			bgm.unload();
 			sbg.enterState(6);
 		}
 	}
@@ -447,6 +459,8 @@ public abstract class Level extends BasicGameState {
 			//sortie d'écran totale
 			player.lose_life();
 			if (player.isGame_over()) {
+				bgm.getRes().stop();
+				bgm.unload();
 				sbg.enterState(1);
 			} else {
 				sbg.enterState(sbg.getCurrentStateID());
@@ -671,6 +685,8 @@ public abstract class Level extends BasicGameState {
 		if (player.getLevel() == getID()-9) {
 			player.setLevel(player.getLevel()+1);
 		}
+		bgm.getRes().stop();
+		bgm.unload();
 		sbgsave.enterState(5);
 		player.earnmoney(100*(getID()-9));
 		player.getShip().fullheal();

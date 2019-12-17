@@ -11,11 +11,15 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
 import main.Game;
+import resources.ResourceManager;
+import resources.loader.MusicLoadable;
+import resources.loader.ResourceLoader;
 import states.levels.Level;
 
 public class LoadingScreen extends BasicGameState {
 	private Image[] keys;
 	private StateBasedGame game;
+	private ResourceLoader<MusicLoadable, String> bgm;
 
 	public LoadingScreen() {
 		// TODO Auto-generated constructor stub
@@ -33,7 +37,8 @@ public class LoadingScreen extends BasicGameState {
 		keys[5] = new Image("Pictures/4_keyboard.png");
 		game = sbg;
 		if (Game.isInit) {
-			Game.music[4].loop();
+			bgm = ResourceManager.instance.getMusic("mapmonde");
+			bgm.load().loop();
 		}
 				
 	}

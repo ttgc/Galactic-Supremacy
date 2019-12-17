@@ -28,6 +28,9 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import gameplay.MapPath;
 import main.Game;
+import resources.ResourceManager;
+import resources.loader.MusicLoadable;
+import resources.loader.ResourceLoader;
 import states.levels.Level;
 
 public class Worldmap extends BasicGameState {
@@ -35,6 +38,7 @@ public class Worldmap extends BasicGameState {
 	private MapPath map;
 	private Image ship;
 	private StateBasedGame game;
+	private ResourceLoader<MusicLoadable, String> bgm;
 
 	public Worldmap() {
 		// TODO Auto-generated constructor stub
@@ -56,9 +60,11 @@ public class Worldmap extends BasicGameState {
 		map.add_level(112, -220);
 		map.add_level(144, -504);
 		ship = new Image("Pictures/ship.png");
-		game= sbg;
-		if (Game.isInit && !Game.music[4].playing()) {
-			Game.music[4].loop();
+		game = sbg;
+		bgm = ResourceManager.instance.getMusic("mapmonde");
+		if (!bgm.isLoaded()) bgm.load();
+		if (Game.isInit && !bgm.getRes().playing()) {
+			bgm.getRes().loop();
 		}
 
 	}
@@ -81,10 +87,16 @@ public class Worldmap extends BasicGameState {
 		super.keyPressed(key, c);
 		if (key == Keyboard.KEY_ESCAPE) {
 			Game.player.save();
+			bgm.getRes().stop();
+			bgm.unload();
 			game.enterState(0);
 		} else if (key == Keyboard.KEY_RETURN) {
+			bgm.getRes().stop();
+			bgm.unload();
 			game.enterState(10+map.getPosition());
 		} else if (key == Keyboard.KEY_SPACE) {
+			bgm.getRes().stop();
+			bgm.unload();
 			game.enterState(6);
 		} else if (key == Keyboard.KEY_UP || key == Keyboard.KEY_RIGHT) {
 			map.forward();

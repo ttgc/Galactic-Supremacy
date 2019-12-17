@@ -29,12 +29,16 @@ import org.newdawn.slick.util.FontUtils;
 import basics.Hitbox;
 import gameplay.ennemies.Ennemy;
 import main.Game;
+import resources.ResourceManager;
+import resources.loader.MusicLoadable;
+import resources.loader.ResourceLoader;
 import states.levels.Level;
 
 public class TitleScreen extends BasicGameState {
 	private Image back;
 	private Image button;
 	private StateBasedGame game;
+	private ResourceLoader<MusicLoadable, String> bgm;
 	//private HUD hud;
 
 	public TitleScreen() {
@@ -47,14 +51,14 @@ public class TitleScreen extends BasicGameState {
 		Level.initRessources();
 		Level.initFont();
 		Ennemy.initHitbox();
-		if (Game.music == null) {
-			Game.initMusic();
+		if (!Game.isInit) {
 			Game.initMusicSystem(gc);
 		}
 		back = new Image("Pictures/background.png");
 		button = new Image("Pictures/button.png");
 		game = sbg;
-		Game.music[0].loop();
+		bgm = ResourceManager.instance.getMusic("titlescreen");
+		bgm.load().loop();
 		
 		//testing
 		//Game.player.earnmoney(9999999);
@@ -113,20 +117,27 @@ public class TitleScreen extends BasicGameState {
 				switch (i) {
 				case 0:
 					//jouer
+					bgm.getRes().stop();
+					bgm.unload();
 					game.enterState(4);
 					break;
 				case 1:
 					//boutique
+					bgm.getRes().stop();
+					bgm.unload();
 					game.enterState(3);
 					break;
 				case 2:
 					//settings
+					bgm.getRes().stop();
+					bgm.unload();
 					game.enterState(2);
 					break;
 				case 3:
 					//quitter
 					Game.player.save();
-					Game.music[0].stop();
+					bgm.getRes().stop();
+					bgm.unload();
 					System.exit(0);
 					break;
 				}

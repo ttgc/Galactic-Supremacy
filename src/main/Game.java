@@ -24,7 +24,6 @@ import javax.swing.JOptionPane;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -49,7 +48,6 @@ import states.levels.Level_6;
 public class Game extends StateBasedGame {
 	public static Player player;
 	public static Settings settings;
-	public static Music[] music;
 	public static boolean isInit;
 
 	public Game(String name) {
@@ -98,11 +96,7 @@ public class Game extends StateBasedGame {
 		initDirectories();
 		initPlayer();
 		initSettings();
-		//Level.initFont();
-		//Level.initRessources();
 		ShopManager.initShops();
-		//Ennemy.initHitbox();
-		//Starcup.init();
 		isInit = false;
 						
 		AppGameContainer app;
@@ -167,16 +161,6 @@ public class Game extends StateBasedGame {
 			settings = new Settings();
 			settings.save();
 		}
-	}
-	
-	public static void initMusic() throws SlickException {
-		music = new Music[6];
-		music[0] = new Music("Music/titlescreen.ogg");
-		music[1] = new Music("Music/battle.ogg");
-		music[2] = new Music("Music/shop.ogg");
-		music[3] = new Music("Music/settings.ogg");
-		music[4] = new Music("Music/mapmonde.ogg");
-		music[5] = new Music("Music/garage.ogg");
 	}
 
 }

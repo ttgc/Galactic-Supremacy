@@ -42,6 +42,9 @@ import gameplay.player.canon.DoubleCanon;
 import gameplay.player.canon.QuintupleCanon;
 import gameplay.player.canon.TripleCanon;
 import main.Game;
+import resources.ResourceManager;
+import resources.loader.MusicLoadable;
+import resources.loader.ResourceLoader;
 import states.levels.Level;
 
 public class Shop extends BasicGameState {
@@ -50,6 +53,7 @@ public class Shop extends BasicGameState {
 	private Image back;
 	private Image[] sprites;
 	private StateBasedGame game;
+	private ResourceLoader<MusicLoadable, String> bgm;
 
 	public Shop() {
 		// TODO Auto-generated constructor stub
@@ -99,7 +103,8 @@ public class Shop extends BasicGameState {
 		initSprites();
 		game = sbg;
 		if (Game.isInit) {
-			Game.music[2].play();
+			bgm = ResourceManager.instance.getMusic("shop");
+			bgm.load().play();
 		}
 
 	}
@@ -277,6 +282,8 @@ public class Shop extends BasicGameState {
 		if (click_zone.check_collision_point(x, y)) {
 			ShopManager.export_data();
 			Game.player.save();
+			bgm.getRes().stop();
+			bgm.unload();
 			game.enterState(0);
 		}
 	}
